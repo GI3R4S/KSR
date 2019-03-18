@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HtmlAgilityPack, Version=1.10.2.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>packages\HtmlAgilityPack.1.10.2\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="SgmlReaderDll, Version=1.8.11.0, Culture=neutral, PublicKeyToken=46b2db9ca481831b, processorArchitecture=MSIL">
       <HintPath>packages\SgmlReader.1.8.11\lib\4.0\SgmlReaderDll.dll</HintPath>
     </Reference>
@@ -54,30 +57,28 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Resources\reut2-000.xml" />
-    <Content Include="Resources\reut2-001.xml" />
-    <Content Include="Resources\reut2-002.xml" />
-    <Content Include="Resources\reut2-003.xml" />
-    <Content Include="Resources\reut2-004.xml" />
-    <Content Include="Resources\reut2-005.xml" />
-    <Content Include="Resources\reut2-006.xml" />
-    <Content Include="Resources\reut2-007.xml" />
-    <Content Include="Resources\reut2-008.xml" />
-    <Content Include="Resources\reut2-009.xml" />
-    <Content Include="Resources\reut2-010.xml" />
-    <Content Include="Resources\reut2-011.xml" />
-    <Content Include="Resources\reut2-012.xml" />
-    <Content Include="Resources\reut2-013.xml" />
-    <Content Include="Resources\reut2-014.xml" />
-    <Content Include="Resources\reut2-015.xml" />
-    <Content Include="Resources\reut2-016.xml" />
-    <Content Include="Resources\reut2-017.xml" />
-    <Content Include="Resources\reut2-018.xml" />
-    <Content Include="Resources\reut2-019.xml" />
-    <Content Include="Resources\reut2-020.xml" />
-    <Content Include="Resources\reut2-021.xml" />
+    <None Include="Resources\reut2-000.sgm" />
+    <None Include="Resources\reut2-001.sgm" />
+    <None Include="Resources\reut2-002.sgm" />
+    <None Include="Resources\reut2-003.sgm" />
+    <None Include="Resources\reut2-004.sgm" />
+    <None Include="Resources\reut2-005.sgm" />
+    <None Include="Resources\reut2-006.sgm" />
+    <None Include="Resources\reut2-007.sgm" />
+    <None Include="Resources\reut2-008.sgm" />
+    <None Include="Resources\reut2-009.sgm" />
+    <None Include="Resources\reut2-010.sgm" />
+    <None Include="Resources\reut2-011.sgm" />
+    <None Include="Resources\reut2-012.sgm" />
+    <None Include="Resources\reut2-013.sgm" />
+    <None Include="Resources\reut2-014.sgm" />
+    <None Include="Resources\reut2-015.sgm" />
+    <None Include="Resources\reut2-016.sgm" />
+    <None Include="Resources\reut2-017.sgm" />
+    <None Include="Resources\reut2-018.sgm" />
+    <None Include="Resources\reut2-019.sgm" />
+    <None Include="Resources\reut2-020.sgm" />
+    <None Include="Resources\reut2-021.sgm" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

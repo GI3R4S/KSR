@@ -1,93 +1,106 @@
-﻿using System.Collections.Generic;
-using System.Xml;
+﻿using HtmlAgilityPack;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System;
 
 namespace Data_Parser
 {
-    class Parser
+    internal class Parser
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            var resources = Directory.GetFiles("..\\..\\Resources\\");
-            List<string> resourceFiles = resources.Where(p => p.EndsWith(".xml")).ToList();
-            List<Article> allArticles = new List<Article>();
-            foreach(var fName  in resourceFiles)
-            {
-                allArticles.InsertRange(allArticles.Count != 0 ? allArticles.Count - 1: 0, ParseXmlDocument(fName));
-            }
-            Console.Write("KEK");
+            List<Article> allArticles = ParseHtmlDocuments("..\\..\\Resources\\");
         }
 
-        public static List<Article> ParseXmlDocument(string documentPath)
+
+        public static List<Article> ParseHtmlDocuments(string directoryPath)
+        {
+            List<string> resourceFiles = new List<string>(Directory.GetFiles(directoryPath).Where(p => p.EndsWith(".sgm")));
+            List<Article> allArticles = new List<Article>();
+            foreach (var fName in resourceFiles)
+            {
+                allArticles.InsertRange(allArticles.Count != 0 ? allArticles.Count - 1 : 0, ParseHtmlDocument(fName));
+            }
+
+            return allArticles;
+        }
+
+        public static List<Article> ParseHtmlDocument(string filePath)
         {
             int i = 0;
             List<Article> toReturn = new List<Article>();
-            XmlDocument xml = new XmlDocument();
-            XmlReader xmlReader = XmlReader.Create(documentPath);
-            xml.Load(xmlReader);
+            HtmlDocument sgml = new HtmlDocument();
+            sgml.Load(filePath);
 
-            XmlNodeList articlesNodes = xml.SelectNodes("/LEWIS/REUTERS");
-            foreach (XmlNode articleNode in articlesNodes)
+            List<HtmlNode> articlesNodes = sgml.DocumentNode.Descendants("REUTERS").ToList();
+            foreach (HtmlNode articleNode in articlesNodes)
             {
                 i++;
-                string date = articleNode["DATE"].InnerText;
+                List<HtmlNode> articleNodeChildren = articleNode.ChildNodes.ToList();
+                string date = articleNodeChildren.First(p => p.OriginalName == "DATE").InnerText;
 
-
-                var topicNode = articleNode["TOPICS"];
+                IEnumerable<HtmlNode> topicsChildren = articleNodeChildren.First(p => p.OriginalName == "TOPICS").Descendants();
                 List<string> topics = new List<string>();
-                foreach (XmlNode childNode in topicNode.ChildNodes)
+                foreach (HtmlNode childNode in topicsChildren)
                 {
                     topics.Add(childNode.InnerText);
                 }
 
-                var placeNode = articleNode["PLACES"];
+                IEnumerable<HtmlNode> placesChildren = articleNodeChildren.First(p => p.OriginalName == "PLACES").Descendants();
                 List<string> places = new List<string>();
-                foreach (XmlNode childNode in placeNode.ChildNodes)
+                foreach (HtmlNode childNode in placesChildren)
                 {
                     places.Add(childNode.InnerText);
                 }
 
-                var peopleNode = articleNode["PEOPLE"];
+                IEnumerable<HtmlNode> peopleChildren = articleNodeChildren.First(p => p.OriginalName == "PEOPLE").Descendants();
                 List<string> people = new List<string>();
-                foreach (XmlNode childNode in peopleNode.ChildNodes)
+                foreach (HtmlNode childNode in peopleChildren)
                 {
                     people.Add(childNode.InnerText);
                 }
 
-                var orgsNode = articleNode["ORGS"];
+                IEnumerable<HtmlNode> orgsChildren = articleNodeChildren.First(p => p.OriginalName == "ORGS").Descendants();
                 List<string> orgs = new List<string>();
-                foreach (XmlNode childNode in orgsNode.ChildNodes)
+                foreach (HtmlNode childNode in orgsChildren)
                 {
                     orgs.Add(childNode.InnerText);
                 }
 
-                var exchangesNode = articleNode["EXCHANGES"];
+                IEnumerable<HtmlNode> exchangesChildren = articleNodeChildren.First(p => p.OriginalName == "EXCHANGES").Descendants();
                 List<string> exchanges = new List<string>();
-                foreach (XmlNode childNode in exchangesNode.ChildNodes)
+                foreach (HtmlNode childNode in exchangesChildren)
                 {
                     exchanges.Add(childNode.InnerText);
                 }
 
-                var companiesNode = articleNode["COMPANIES"];
+                IEnumerable<HtmlNode> companiesChildren = articleNodeChildren.First(p => p.OriginalName == "COMPANIES").Descendants();
                 List<string> companies = new List<string>();
-                foreach (XmlNode childNode in companiesNode.ChildNodes)
+                foreach (HtmlNode childNode in companiesChildren)
                 {
                     companies.Add(childNode.InnerText);
                 }
 
-                string unknown = articleNode["UNKNOWN"].InnerText;
+                string unknown;
+                try
+                {
+                    unknown = articleNodeChildren.First(p => p.OriginalName == "UNKNOWN").InnerText;
+                }
+                catch (System.InvalidOperationException exception)
+                {
+                    unknown = "";
+                }
 
-                var textNode = articleNode["TEXT"];
+
+                HtmlNode textNode = articleNodeChildren.First(p => p.OriginalName == "TEXT");
 
                 string title = "";
                 string dateline = "";
                 string body = "";
 
-                foreach(XmlNode child in textNode.ChildNodes)
+                foreach (HtmlNode child in textNode.ChildNodes)
                 {
-                    switch(child.Name)
+                    switch (child.OriginalName)
                     {
                         case "BODY":
                             {
@@ -107,14 +120,16 @@ namespace Data_Parser
                     }
                 }
 
-                Article article = new Article();
-                article.Companies = companies;
-                article.Date = date;
-                article.Orgs = orgs;
-                article.People = people;
-                article.Places = places;
-                article.Topics = topics;
-                article.Unknown = unknown;
+                Article article = new Article
+                {
+                    Companies = companies,
+                    Date = date,
+                    Orgs = orgs,
+                    People = people,
+                    Places = places,
+                    Topics = topics,
+                    Unknown = unknown
+                };
                 article.Text.Body = body;
                 article.Text.Dateline = dateline;
                 article.Text.Title = title;

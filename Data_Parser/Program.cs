@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Xml;
 using System.IO;
-using Data_Parser;
+using System.Linq;
+using System;
 
 namespace Data_Parser
 {
@@ -13,7 +10,14 @@ namespace Data_Parser
     {
         static void Main(string[] args)
         {
-            ParseXmlDocument("..\\..\\Resources\\reut2-000.xml");
+            var resources = Directory.GetFiles("..\\..\\Resources\\");
+            List<string> resourceFiles = resources.Where(p => p.EndsWith(".xml")).ToList();
+            List<Article> allArticles = new List<Article>();
+            foreach(var fName  in resourceFiles)
+            {
+                allArticles.InsertRange(allArticles.Count != 0 ? allArticles.Count - 1: 0, ParseXmlDocument(fName));
+            }
+            Console.Write("KEK");
         }
 
         public static List<Article> ParseXmlDocument(string documentPath)

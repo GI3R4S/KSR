@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Data_Parser
 {
-    class Article
+    public class Article
     {
         public string Date { get; set; }
         public List<string> Topics { get; set; } = new List<string>();
@@ -18,5 +18,14 @@ namespace Data_Parser
         public string Unknown { get; set; }
         public Text Text { get; set; } = new Text();
 
+        public enum Category
+        {
+            ETopics,
+            EPlaces,
+            EPeople,
+            EOrgs,
+            EExchanges,
+            ECompanies
+        };
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Data_Parser
 {
-    class Text
+    public class Text
     {
         public string Title { get; set; }
         public string Dateline { get; set; }

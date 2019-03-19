@@ -5,6 +5,43 @@ VisualStudioVersion = 15.0.28307.489
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data_Parser", "Data_Parser.csproj", "{7923E184-D0B7-496A-A6CA-FDCAB75BC621}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clasification", "..\Clasification\Clasification.csproj", "{7896B670-1C41-4109-8315-51DE2EAA684B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{544C3CF6-F4B2-4B42-82C8-83F64649EBC3}"
+	ProjectSection(SolutionItems) = preProject
+		..\Resources\all-exchanges-strings.lc.txt = ..\Resources\all-exchanges-strings.lc.txt
+		..\Resources\all-orgs-strings.lc.txt = ..\Resources\all-orgs-strings.lc.txt
+		..\Resources\all-people-strings.lc.txt = ..\Resources\all-people-strings.lc.txt
+		..\Resources\all-places-strings.lc.txt = ..\Resources\all-places-strings.lc.txt
+		..\Resources\all-topics-strings.lc.txt = ..\Resources\all-topics-strings.lc.txt
+		..\Resources\cat-descriptions_120396.txt = ..\Resources\cat-descriptions_120396.txt
+		..\Resources\feldman-cia-worldfactbook-data.txt = ..\Resources\feldman-cia-worldfactbook-data.txt
+		..\Resources\lewis.dtd = ..\Resources\lewis.dtd
+		..\Resources\README.txt = ..\Resources\README.txt
+		..\Resources\reut2-000.sgm = ..\Resources\reut2-000.sgm
+		..\Resources\reut2-001.sgm = ..\Resources\reut2-001.sgm
+		..\Resources\reut2-002.sgm = ..\Resources\reut2-002.sgm
+		..\Resources\reut2-003.sgm = ..\Resources\reut2-003.sgm
+		..\Resources\reut2-004.sgm = ..\Resources\reut2-004.sgm
+		..\Resources\reut2-005.sgm = ..\Resources\reut2-005.sgm
+		..\Resources\reut2-006.sgm = ..\Resources\reut2-006.sgm
+		..\Resources\reut2-007.sgm = ..\Resources\reut2-007.sgm
+		..\Resources\reut2-008.sgm = ..\Resources\reut2-008.sgm
+		..\Resources\reut2-009.sgm = ..\Resources\reut2-009.sgm
+		..\Resources\reut2-010.sgm = ..\Resources\reut2-010.sgm
+		..\Resources\reut2-011.sgm = ..\Resources\reut2-011.sgm
+		..\Resources\reut2-012.sgm = ..\Resources\reut2-012.sgm
+		..\Resources\reut2-013.sgm = ..\Resources\reut2-013.sgm
+		..\Resources\reut2-014.sgm = ..\Resources\reut2-014.sgm
+		..\Resources\reut2-015.sgm = ..\Resources\reut2-015.sgm
+		..\Resources\reut2-016.sgm = ..\Resources\reut2-016.sgm
+		..\Resources\reut2-017.sgm = ..\Resources\reut2-017.sgm
+		..\Resources\reut2-018.sgm = ..\Resources\reut2-018.sgm
+		..\Resources\reut2-019.sgm = ..\Resources\reut2-019.sgm
+		..\Resources\reut2-020.sgm = ..\Resources\reut2-020.sgm
+		..\Resources\reut2-021.sgm = ..\Resources\reut2-021.sgm
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +52,10 @@ Global
 		{7923E184-D0B7-496A-A6CA-FDCAB75BC621}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7923E184-D0B7-496A-A6CA-FDCAB75BC621}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7923E184-D0B7-496A-A6CA-FDCAB75BC621}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7896B670-1C41-4109-8315-51DE2EAA684B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7896B670-1C41-4109-8315-51DE2EAA684B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7896B670-1C41-4109-8315-51DE2EAA684B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7896B670-1C41-4109-8315-51DE2EAA684B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

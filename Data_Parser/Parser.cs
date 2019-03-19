@@ -5,11 +5,11 @@ using System.Linq;
 
 namespace Data_Parser
 {
-    internal class Parser
+    public class Parser
     {
-        private static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            List<Article> allArticles = ParseHtmlDocuments("..\\..\\Resources\\");
+            List<Article> allArticles = ParseHtmlDocuments("..\\..\\..\\Resources\\");
         }
 
 
@@ -39,42 +39,42 @@ namespace Data_Parser
                 List<HtmlNode> articleNodeChildren = articleNode.ChildNodes.ToList();
                 string date = articleNodeChildren.First(p => p.OriginalName == "DATE").InnerText;
 
-                IEnumerable<HtmlNode> topicsChildren = articleNodeChildren.First(p => p.OriginalName == "TOPICS").Descendants();
+                IEnumerable<HtmlNode> topicsChildren = articleNodeChildren.First(p => p.OriginalName == "TOPICS").Descendants().Where(p => p.Name != "#text");
                 List<string> topics = new List<string>();
                 foreach (HtmlNode childNode in topicsChildren)
                 {
                     topics.Add(childNode.InnerText);
                 }
 
-                IEnumerable<HtmlNode> placesChildren = articleNodeChildren.First(p => p.OriginalName == "PLACES").Descendants();
+                IEnumerable<HtmlNode> placesChildren = articleNodeChildren.First(p => p.OriginalName == "PLACES").Descendants().Where(p => p.Name != "#text");
                 List<string> places = new List<string>();
                 foreach (HtmlNode childNode in placesChildren)
                 {
                     places.Add(childNode.InnerText);
                 }
 
-                IEnumerable<HtmlNode> peopleChildren = articleNodeChildren.First(p => p.OriginalName == "PEOPLE").Descendants();
+                IEnumerable<HtmlNode> peopleChildren = articleNodeChildren.First(p => p.OriginalName == "PEOPLE").Descendants().Where(p => p.Name != "#text");
                 List<string> people = new List<string>();
                 foreach (HtmlNode childNode in peopleChildren)
                 {
                     people.Add(childNode.InnerText);
                 }
 
-                IEnumerable<HtmlNode> orgsChildren = articleNodeChildren.First(p => p.OriginalName == "ORGS").Descendants();
+                IEnumerable<HtmlNode> orgsChildren = articleNodeChildren.First(p => p.OriginalName == "ORGS").Descendants().Where(p => p.Name != "#text");
                 List<string> orgs = new List<string>();
                 foreach (HtmlNode childNode in orgsChildren)
                 {
                     orgs.Add(childNode.InnerText);
                 }
 
-                IEnumerable<HtmlNode> exchangesChildren = articleNodeChildren.First(p => p.OriginalName == "EXCHANGES").Descendants();
+                IEnumerable<HtmlNode> exchangesChildren = articleNodeChildren.First(p => p.OriginalName == "EXCHANGES").Descendants().Where(p => p.Name != "#text");
                 List<string> exchanges = new List<string>();
                 foreach (HtmlNode childNode in exchangesChildren)
                 {
                     exchanges.Add(childNode.InnerText);
                 }
 
-                IEnumerable<HtmlNode> companiesChildren = articleNodeChildren.First(p => p.OriginalName == "COMPANIES").Descendants();
+                IEnumerable<HtmlNode> companiesChildren = articleNodeChildren.First(p => p.OriginalName == "COMPANIES").Descendants().Where(p => p.Name != "#text");
                 List<string> companies = new List<string>();
                 foreach (HtmlNode childNode in companiesChildren)
                 {

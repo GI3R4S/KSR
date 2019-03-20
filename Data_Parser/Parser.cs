@@ -37,54 +37,54 @@ namespace Data_Parser
             {
                 i++;
                 List<HtmlNode> articleNodeChildren = articleNode.ChildNodes.ToList();
-                string date = articleNodeChildren.First(p => p.OriginalName == "DATE").InnerText;
+                string date = articleNodeChildren.First(p => p.OriginalName == "DATE").InnerText.ToLower();
 
                 IEnumerable<HtmlNode> topicsChildren = articleNodeChildren.First(p => p.OriginalName == "TOPICS").Descendants().Where(p => p.Name != "#text");
                 List<string> topics = new List<string>();
                 foreach (HtmlNode childNode in topicsChildren)
                 {
-                    topics.Add(childNode.InnerText);
+                    topics.Add(childNode.InnerText.ToLower());
                 }
 
                 IEnumerable<HtmlNode> placesChildren = articleNodeChildren.First(p => p.OriginalName == "PLACES").Descendants().Where(p => p.Name != "#text");
                 List<string> places = new List<string>();
                 foreach (HtmlNode childNode in placesChildren)
                 {
-                    places.Add(childNode.InnerText);
+                    places.Add(childNode.InnerText.ToLower());
                 }
 
                 IEnumerable<HtmlNode> peopleChildren = articleNodeChildren.First(p => p.OriginalName == "PEOPLE").Descendants().Where(p => p.Name != "#text");
                 List<string> people = new List<string>();
                 foreach (HtmlNode childNode in peopleChildren)
                 {
-                    people.Add(childNode.InnerText);
+                    people.Add(childNode.InnerText.ToLower());
                 }
 
                 IEnumerable<HtmlNode> orgsChildren = articleNodeChildren.First(p => p.OriginalName == "ORGS").Descendants().Where(p => p.Name != "#text");
                 List<string> orgs = new List<string>();
                 foreach (HtmlNode childNode in orgsChildren)
                 {
-                    orgs.Add(childNode.InnerText);
+                    orgs.Add(childNode.InnerText.ToLower());
                 }
 
                 IEnumerable<HtmlNode> exchangesChildren = articleNodeChildren.First(p => p.OriginalName == "EXCHANGES").Descendants().Where(p => p.Name != "#text");
                 List<string> exchanges = new List<string>();
                 foreach (HtmlNode childNode in exchangesChildren)
                 {
-                    exchanges.Add(childNode.InnerText);
+                    exchanges.Add(childNode.InnerText.ToLower());
                 }
 
                 IEnumerable<HtmlNode> companiesChildren = articleNodeChildren.First(p => p.OriginalName == "COMPANIES").Descendants().Where(p => p.Name != "#text");
                 List<string> companies = new List<string>();
                 foreach (HtmlNode childNode in companiesChildren)
                 {
-                    companies.Add(childNode.InnerText);
+                    companies.Add(childNode.InnerText.ToLower());
                 }
 
                 string unknown;
                 try
                 {
-                    unknown = articleNodeChildren.First(p => p.OriginalName == "UNKNOWN").InnerText;
+                    unknown = articleNodeChildren.First(p => p.OriginalName == "UNKNOWN").InnerText.ToLower();
                 }
                 catch (System.InvalidOperationException exception)
                 {
@@ -104,17 +104,17 @@ namespace Data_Parser
                     {
                         case "BODY":
                             {
-                                body = child.InnerText;
+                                body = child.InnerText.ToLower();
                                 break;
                             }
                         case "TITLE":
                             {
-                                title = child.InnerText;
+                                title = child.InnerText.ToLower();
                                 break;
                             }
                         case "DATELINE":
                             {
-                                dateline = child.InnerText;
+                                dateline = child.InnerText.ToLower();
                                 break;
                             }
                     }

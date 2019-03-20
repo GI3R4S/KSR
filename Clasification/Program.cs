@@ -17,6 +17,8 @@ namespace Clasification
             var testData = ExtractTestDataFromTrainingData(ref filteredArticles, 60);
             var trainingData = filteredArticles;
 
+            var stopList = GenerateStopList(trainingData);
+
             Console.WriteLine("KEK");
         }
 
@@ -61,7 +63,7 @@ namespace Clasification
             int numberOfRequestedItems = (int)(trainingData.Count * percentage / 100);
             Random random = new Random();
 
-            while(numberOfRequestedItems-- != 0)
+            while (numberOfRequestedItems-- != 0)
             {
                 int randomIndex = random.Next(trainingData.Count);
                 Article randomItem = trainingData[randomIndex];
@@ -71,7 +73,49 @@ namespace Clasification
 
             return testData;
         }
+
+        public static List<string> GenerateStopList(List<Article> articles)
+        {
+            List<string> stopList = new List<string>();
+            Dictionary<string, int> occurencesRanking = new Dictionary<string, int>();
+
+            foreach (Article article in articles)
+            {
+                article.Text.Body = article.Text.Body.RemovePunctuation();
+                article.Text.Body = article.Text.Body.RemoveNeedlessSpaces();
+                List<string> bodyWords = article.Text.Body.Split(' ').ToList();
+                List<string> toRemove = new List<string>();
+
+                for (int i = 0; i < bodyWords.Count; i++)
+                {
+                    if (bodyWords[i].Where(p => Char.IsDigit(p)).Any())
+                    {
+                        //                      stopList.Add(bodyWords[i]);
+                        toRemove.Add(bodyWords[i]);
+                    }
+                }
+
+                foreach (string word in toRemove)
+                {
+                    bodyWords.Remove(word);
+                }
+
+                for (int i = 0; i < bodyWords.Count; i++)
+                {
+                    if(occurencesRanking.ContainsKey(bodyWords[i]))
+                    {
+                        occurencesRanking[bodyWords[i]]++;
+                    }
+                    else
+                    {
+                        occurencesRanking.Add(bodyWords[i], 1);
+                    }
+                }
+            }
+
+            occurencesRanking = occurencesRanking.OrderByDescending(x => x.Value).ToDictionary(p => p.Key, p => p.Value);
+
+            return stopList;
+        }
     }
-
-
 }

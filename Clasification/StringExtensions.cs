@@ -10,7 +10,7 @@ namespace Clasification
         {
             string toReturn = (string)str.Clone();
 
-            List<char> toReplace = new List<char>() {  '\n','\t','\'','\"','(',')','[',']','{','}','<','>',':',';','?',',','`','~','@','#','$','%','^','&', '*', '-', '_', '&', '=', '+', '\\', '/', '|' };
+            List<char> toReplace = new List<char>() { '\r', '\n','\t','\'','\"','(',')','[',']','{','}','<','>',':',';','?',',', '.','`','~','@','#','$','%','^','&', '*', '-', '_', '&', '=', '+', '\\', '/', '|' };
             foreach(var c in toReplace)
             {
                 toReturn = toReturn.Replace(c, ' ');

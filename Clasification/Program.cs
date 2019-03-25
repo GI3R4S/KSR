@@ -54,9 +54,35 @@ namespace Clasification
                 { "japan", LoadStaticListOfKeywords("..\\..\\keywords\\japan_keywords.txt")},
             };
 
+            Dictionary<string, List<string>> AllKeyWords = new Dictionary<string, List<string>>()
+             {
+                { "west-germany", new List<string>()},
+                { "usa", new List<string>()},
+                { "france", new List<string>()},
+                { "uk", new List<string>()},
+                { "canada", new List<string>()},
+                { "japan", new List<string>()},
+            };
 
+            foreach(string placeName in places)
+            {
+                AllKeyWords[placeName].InsertRange(0, dynamicKeywords[placeName]);
+                AllKeyWords[placeName].InsertRange(0, staticKeywords[placeName]);
+                AllKeyWords[placeName] = AllKeyWords[placeName].Distinct().ToList();
+            }
 
+            KeywordsDensityExtractor extractor = new KeywordsDensityExtractor();
+            extractor.Train(labelArticlesMap["japan"], AllKeyWords["japan"]);
 
+            double result1 = extractor.ComputeFactor(labelArticlesMap["japan"][10], AllKeyWords["japan"]);
+            double result2 = extractor.ComputeFactor(labelArticlesMap["japan"][11], AllKeyWords["japan"]);
+            double result3 = extractor.ComputeFactor(labelArticlesMap["japan"][12], AllKeyWords["japan"]);
+            double result4 = extractor.ComputeFactor(labelArticlesMap["japan"][13], AllKeyWords["japan"]);
+            double result5 = extractor.ComputeFactor(labelArticlesMap["japan"][14], AllKeyWords["japan"]);
+            double result6 = extractor.ComputeFactor(labelArticlesMap["japan"][15], AllKeyWords["japan"]);
+            double result7 = extractor.ComputeFactor(labelArticlesMap["japan"][16], AllKeyWords["japan"]);
+            double result8 = extractor.ComputeFactor(labelArticlesMap["japan"][17], AllKeyWords["japan"]);
+            double resultcanada = extractor.ComputeFactor(labelArticlesMap["canada"][1], AllKeyWords["japan"]);
             Console.WriteLine("KEK");
         }
 
@@ -66,8 +92,11 @@ namespace Clasification
             using (StreamReader sr = new StreamReader(filePath))
             {
                 string text = sr.ReadToEnd();
+                text = text.ToLower();
                 text = text.Replace("\r", "");
-                return text.Split('\n').ToList();
+                List<string> words = text.Split('\n').ToList();
+                words.RemoveAll(p => p.Length < 3 || p.Any(c => Char.IsDigit(c)));
+                return words;
             }
         }
         public static List<double> ComputeVectorOfCharacteristics(Article article, List<Func<Article, double>> funcs)
@@ -164,30 +193,7 @@ namespace Clasification
 
             foreach (Article article in articles)
             {
-                string bodyText = (string)article.Text.Body.Clone();
-                string datelineText = (string)article.Text.Dateline.Clone();
-                string titleText = (string)article.Text.Title.Clone();
-
-                bodyText = bodyText.RemovePunctuation();
-                datelineText = datelineText.RemovePunctuation();
-                titleText = titleText.RemovePunctuation();
-                
-                bodyText = bodyText.RemoveNeedlessSpaces();
-                datelineText = datelineText.RemoveNeedlessSpaces();
-                titleText = titleText.RemoveNeedlessSpaces();
-
-                List<string> bodyWords = bodyText.Split(' ').ToList();
-                List<string> datelineWords = datelineText.Split(' ').ToList();
-                List<string> titleWords = titleText.Split(' ').ToList();
-
-                bodyWords.RemoveAll(p => p.Length < 3 || p.Any(c => Char.IsDigit(c)));
-                datelineWords.RemoveAll(p => p.Length < 3 || p.Any(c => Char.IsDigit(c)));
-                titleWords.RemoveAll(p => p.Length < 3 || p.Any(c => Char.IsDigit(c)));
-
-                List<string> allWords = new List<string>();
-                allWords.InsertRange(0, bodyWords);
-                allWords.InsertRange(0, datelineWords);
-                allWords.InsertRange(0, titleWords);
+                List<string> allWords = ExtractMeaningfulWords(article);
 
                 for (int i = 0; i < allWords.Count; i++)
                 {
@@ -205,5 +211,36 @@ namespace Clasification
 
             return occurencesRanking.Select(p => p.Key).Where(p => !StopList.Contains(p)).Take(200).ToList();
         }
+
+        public static List<string> ExtractMeaningfulWords(Article article)
+        {
+            string bodyText = (string)article.Text.Body.Clone();
+            string datelineText = (string)article.Text.Dateline.Clone();
+            string titleText = (string)article.Text.Title.Clone();
+
+            bodyText = bodyText.RemovePunctuation();
+            datelineText = datelineText.RemovePunctuation();
+            titleText = titleText.RemovePunctuation();
+
+            bodyText = bodyText.RemoveNeedlessSpaces();
+            datelineText = datelineText.RemoveNeedlessSpaces();
+            titleText = titleText.RemoveNeedlessSpaces();
+
+            List<string> bodyWords = bodyText.Split(' ').ToList();
+            List<string> datelineWords = datelineText.Split(' ').ToList();
+            List<string> titleWords = titleText.Split(' ').ToList();
+
+            bodyWords.RemoveAll(p => p.Length < 3 || p.Any(c => Char.IsDigit(c)));
+            datelineWords.RemoveAll(p => p.Length < 3 || p.Any(c => Char.IsDigit(c)));
+            titleWords.RemoveAll(p => p.Length < 3 || p.Any(c => Char.IsDigit(c)));
+
+            List<string> allWords = new List<string>();
+            allWords.InsertRange(0, bodyWords);
+            allWords.InsertRange(0, datelineWords);
+            allWords.InsertRange(0, titleWords);
+
+            return allWords;
+        }
+
     }
 }

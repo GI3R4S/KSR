@@ -9,10 +9,16 @@ namespace Clasification
 {
     class KeywordsDensityExtractor : Extractor
     {
-        double avarageDensity = 0;
-        public override double ComputeFactor(Article article, List<string> keywords)
+        public double avarageDensity { get; set; } = 0;
+        public Dictionary<string, double> keywords { get; set; } = new Dictionary<string, double>();
+        public KeywordsDensityExtractor(Dictionary <string, double> aKeywords)
         {
-            int occurencesInArticle = 0;
+            keywords = aKeywords;
+        }
+
+        public override double ComputeFactor(Article article)
+        {
+            double occurenceFactor = 0;
             double totalDensityFactor = 0;
             List<string> articleWords = Program.ExtractMeaningfulWords(article);
             if (articleWords.Count == 0)
@@ -21,18 +27,18 @@ namespace Clasification
             }
             else
             {
-                foreach (string keyword in keywords)
+                foreach (var pair in keywords)
                 {
-                    occurencesInArticle += articleWords.Count(p => p.Contains(keyword));
+                    occurenceFactor += articleWords.Count(p => p.Contains(pair.Key)) * pair.Value;
                 }
             }
 
-            totalDensityFactor += occurencesInArticle / (double)articleWords.Count;
+            totalDensityFactor += occurenceFactor / (double)articleWords.Count;
             double z = totalDensityFactor - avarageDensity;
-            return 1 / (1 + Math.Pow(Math.E, -z));
+            return 1 / (1 + Math.Pow(Math.E, 16.0 * (-z)));
         }
 
-        public override void Train(List<Article> articles, List<string> keywords)
+        public override void Train(List<Article> articles)
         {
             double totalDensityFactor = 0;
             double countOfArticles = articles.Count;
@@ -40,18 +46,18 @@ namespace Clasification
 
             foreach(Article article in articles)
             {
-                int occurencesInArticle = 0;
+                double occurenceFactor = 0;
                 List<string> articleWords = Program.ExtractMeaningfulWords(article);
-                if(articleWords.Count == 0)
+                if (articleWords.Count == 0)
                 {
                     omittedArticles++;
                     continue;
                 }
-                foreach (string keyword in keywords)
+                foreach (var pair in keywords)
                 {
-                    occurencesInArticle += articleWords.Count(p => p.Contains(keyword));
+                    occurenceFactor += articleWords.Count(p => p.Contains(pair.Key)) * pair.Value;
                 }
-                totalDensityFactor += occurencesInArticle / (double)articleWords.Count;
+                totalDensityFactor += occurenceFactor / (double)articleWords.Count;
             }
 
             avarageDensity = totalDensityFactor / (countOfArticles - omittedArticles);

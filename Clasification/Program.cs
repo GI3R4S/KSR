@@ -12,16 +12,8 @@ namespace Clasification
     {
         public static SortedSet<string> StopList { get; set; } = new SortedSet<string>();
         public static List<Article> AllReutersArticles { get; set; } = new List<Article>();
-        private static void Main(string[] args)
-        {
-            LoadStoplists();
-            AllReutersArticles = Parser.ParseHtmlDocuments("..\\..\\..\\Resources\\");
-            List<Article> filteredArticles = RemoveArticleWithMultipleLabelsInCategory(AllReutersArticles, Category.EPlaces);
 
-            List<Article> testData = ExtractTestDataFromTrainingData(ref filteredArticles, 60);
-            List<Article> trainingData = filteredArticles;
-
-            List<string> places = new List<string>()
+        public static List<string> Places = new List<string>()
             {
                 "west-germany",
                 "usa",
@@ -31,61 +23,140 @@ namespace Clasification
                 "japan"
             };
 
+        private static void Main(string[] args)
+        {
+
+
+            LoadStoplists();
+
+            #region LoadFilterAndDivideArticles
+            AllReutersArticles = Parser.ParseHtmlDocuments("..\\..\\..\\..\\Resources\\");
+            List<Article> filteredArticles = RemoveArticleWithMultipleLabelsInCategory(AllReutersArticles, Category.EPlaces);
+
+            List<Article> testData = ExtractPartOfCollection(ref filteredArticles, 60);
+            List<Article> trainingData = filteredArticles;
+            #endregion
+
+            #region CreatePlaceLabelArticlesMap
             Dictionary<string, List<Article>> labelArticlesMap = new Dictionary<string, List<Article>>();
-            foreach(string place in places)
+            foreach (string place in Places)
             {
-                labelArticlesMap.Add(place, AllReutersArticles.Where(p => p.Places.Contains(place)).ToList());
+                labelArticlesMap.Add(place, filteredArticles.Where(p => p.Places.Contains(place)).ToList());
+            }
+            #endregion
+
+            #region CreateWordFrequencyRanking
+            Dictionary<string, Dictionary<string, double>> rankingsOfOccurences = new Dictionary<string, Dictionary<string, double>>();
+
+            foreach (var item in labelArticlesMap)
+            {
+                rankingsOfOccurences.Add(item.Key, CreateWordsOccurenceFrequencyRanking(item.Value).Take(100).ToDictionary(p => p.Key, p => p.Value));
+            }
+            #endregion
+
+            #region TrainExtractors
+            Dictionary<string, Extractor> extractors = new Dictionary<string, Extractor>();
+
+            Stopwatch time = new Stopwatch();
+            time.Start();
+            foreach (var place in Places)
+            {
+                extractors.Add(place, new KeywordsDensityExtractor(rankingsOfOccurences[place]));
+                extractors[place].Train(labelArticlesMap[place]);
+            }
+            time.Stop();
+            #endregion
+
+            #region PrepareArticlesForColdStart
+            List<Article> articlesForColdStart = ExtractItemsForColdStart(trainingData, 10);
+
+            //Dictionary<List<double>, Article> articlesAndVectorsOfCharacteristics = new Dictionary<List<double>, Article>();
+
+            List<KeyValuePair<Article, List<double>>> articlesAndVectorsOfCharacteristics = new List<KeyValuePair<Article, List<double>>>();
+
+            foreach (Article article in articlesForColdStart)
+            {
+                article.InitalizeAssignedLabel();
+                articlesAndVectorsOfCharacteristics.Add(new KeyValuePair<Article, List<double>>(article, CreateVectorOfCharacteristics(article, extractors)));
+            }
+            #endregion
+
+
+            Dictionary<List<double>, Article> knnMap = new Dictionary<List<double>, Article>();
+
+            foreach(Article article in testData)
+            {
+                knnMap.Add(CreateVectorOfCharacteristics(article, extractors), article);
             }
 
-            Dictionary<string, List<string>> dynamicKeywords = new Dictionary<string, List<string>>();
+            bool isAnyDifference = false;
+            int nFactor = 5;
 
-            foreach(var item in labelArticlesMap)
+            foreach(var pair in knnMap.Where(p => p.Value.AssignedLabel == ""))
             {
-                dynamicKeywords.Add(item.Key, CreateDynamicKeywordList(item.Value));
+                DistanceInMetric comparer = new DistanceInMetric(Metrics.EuclideanMetricDistance, pair.Key);
+                articlesAndVectorsOfCharacteristics.Sort();
+                Console.Write("KEK");
             }
 
-            Dictionary<string, List<string>> staticKeywords = new Dictionary<string, List<string>>()
-             {
-                { "west-germany", LoadStaticListOfKeywords("..\\..\\keywords\\west_germany_keywords.txt")},
-                { "usa", LoadStaticListOfKeywords("..\\..\\keywords\\us_keywords.txt")},
-                { "france", LoadStaticListOfKeywords("..\\..\\keywords\\france_keywords.txt")},
-                { "uk", LoadStaticListOfKeywords("..\\..\\keywords\\uk_keywords.txt")},
-                { "canada", LoadStaticListOfKeywords("..\\..\\keywords\\canada_keywords.txt")},
-                { "japan", LoadStaticListOfKeywords("..\\..\\keywords\\japan_keywords.txt")},
-            };
-
-            Dictionary<string, List<string>> AllKeyWords = new Dictionary<string, List<string>>()
-             {
-                { "west-germany", new List<string>()},
-                { "usa", new List<string>()},
-                { "france", new List<string>()},
-                { "uk", new List<string>()},
-                { "canada", new List<string>()},
-                { "japan", new List<string>()},
-            };
-
-            foreach(string placeName in places)
+            while(!isAnyDifference)
             {
-                AllKeyWords[placeName].InsertRange(0, dynamicKeywords[placeName]);
-                AllKeyWords[placeName].InsertRange(0, staticKeywords[placeName]);
-                AllKeyWords[placeName] = AllKeyWords[placeName].Distinct().ToList();
+
             }
 
-            KeywordsDensityExtractor extractor = new KeywordsDensityExtractor();
-            extractor.Train(labelArticlesMap["japan"], AllKeyWords["japan"]);
+            #region KNN
+                
+            #endregion
+            //int failures = 0;
+            //int successes = 0;
 
-            double result1 = extractor.ComputeFactor(labelArticlesMap["japan"][10], AllKeyWords["japan"]);
-            double result2 = extractor.ComputeFactor(labelArticlesMap["japan"][11], AllKeyWords["japan"]);
-            double result3 = extractor.ComputeFactor(labelArticlesMap["japan"][12], AllKeyWords["japan"]);
-            double result4 = extractor.ComputeFactor(labelArticlesMap["japan"][13], AllKeyWords["japan"]);
-            double result5 = extractor.ComputeFactor(labelArticlesMap["japan"][14], AllKeyWords["japan"]);
-            double result6 = extractor.ComputeFactor(labelArticlesMap["japan"][15], AllKeyWords["japan"]);
-            double result7 = extractor.ComputeFactor(labelArticlesMap["japan"][16], AllKeyWords["japan"]);
-            double result8 = extractor.ComputeFactor(labelArticlesMap["japan"][17], AllKeyWords["japan"]);
-            double resultcanada = extractor.ComputeFactor(labelArticlesMap["canada"][1], AllKeyWords["japan"]);
-            Console.WriteLine("KEK");
+            //foreach(Article article in trainingData)
+            //{
+            //    string actualLabel = article.Places[0];
+
+            //    int index = 0;
+            //    double max = 0;
+
+            //    int currentIndex = 0;
+            //    foreach(var extractor in extractors)
+            //    {
+            //        double tmp = extractor.Value.ComputeFactor(article);
+            //        if(tmp > max)
+            //        {
+            //            max = tmp;
+            //            index = currentIndex;
+            //        }
+            //        currentIndex++;
+            //    }
+
+            //    if (extractors.ElementAt(index).Key == actualLabel)
+            //    {
+            //        successes++;
+            //    }
+
+            //    else
+            //    {
+            //        failures++;
+            //    }
+            //}
+
+
+
+
+            Console.WriteLine("");
         }
 
+        public static List<double> CreateVectorOfCharacteristics(Article article, Dictionary<string, Extractor> extractors)
+        {
+            List<double> vectorOfCharacteristics = new List<double>();
+
+            foreach(var nameExtractorPair in extractors)
+            {
+                vectorOfCharacteristics.Add(nameExtractorPair.Value.ComputeFactor(article));    
+            }
+
+            return vectorOfCharacteristics;
+        }
         public static List<string> LoadStaticListOfKeywords(string filePath)
         {
             List<string> toReturn = new List<string>();
@@ -118,7 +189,7 @@ namespace Clasification
 
         public static void LoadStoplists()
         {
-            string[] fileNames = Directory.GetFiles("..\\..\\stop_lists");
+            string[] fileNames = Directory.GetFiles("..\\..\\..\\stop_lists");
 
             foreach (string fileName in fileNames)
             {
@@ -126,7 +197,7 @@ namespace Clasification
                 {
                     string wholeText = sr.ReadToEnd();
                     wholeText = wholeText.Replace("\r\n", " ");
-                    string [] splittedText = wholeText.Split(' ');
+                    string[] splittedText = wholeText.Split(' ');
 
                     foreach (string word in splittedText)
                     {
@@ -168,7 +239,7 @@ namespace Clasification
             return toFilter;
         }
 
-        public static List<Article> ExtractTestDataFromTrainingData(ref List<Article> trainingData, float percentage)
+        public static List<Article> ExtractPartOfCollection(ref List<Article> trainingData, float percentage)
         {
             List<Article> testData = new List<Article>();
             Debug.Assert(percentage >= 0 && percentage <= 100);
@@ -186,10 +257,35 @@ namespace Clasification
 
             return testData;
         }
-
-        public static List<string> CreateDynamicKeywordList(List<Article> articles)
+        public static List<Article> ExtractItemsForColdStart(List<Article> originalContent, float percentage)
         {
-            Dictionary<string, int> occurencesRanking = new Dictionary<string, int>();
+            List<Article> randomOutput = new List<Article>();
+            Debug.Assert(percentage >= 0 && percentage <= 100);
+
+            int numberOfRequestedItems = (int)(originalContent.Count * percentage / 100);
+            int avgNumberOfItemsPerLabel = numberOfRequestedItems / 6;
+
+            foreach(string place in Places)
+            {
+                randomOutput.InsertRange(0, originalContent.Where(p => p.Places[0] == place).Take(avgNumberOfItemsPerLabel));
+            }
+
+            int howManyLeft = numberOfRequestedItems - randomOutput.Count;
+            
+            if(howManyLeft != 0)
+            {
+                while(howManyLeft-- !=0)
+                {
+                    randomOutput.Add(originalContent.First(p => !randomOutput.Contains(p)));
+                }
+            }
+
+            return randomOutput;
+        }
+
+        public static Dictionary<string, double> CreateWordsOccurenceFrequencyRanking(List<Article> articles)
+        {
+            Dictionary<string, double> occurencesRanking = new Dictionary<string, double>();
 
             foreach (Article article in articles)
             {
@@ -197,7 +293,7 @@ namespace Clasification
 
                 for (int i = 0; i < allWords.Count; i++)
                 {
-                    if(occurencesRanking.ContainsKey(allWords[i]))
+                    if (occurencesRanking.ContainsKey(allWords[i]))
                     {
                         occurencesRanking[allWords[i]]++;
                     }
@@ -207,9 +303,13 @@ namespace Clasification
                     }
                 }
             }
-            occurencesRanking = occurencesRanking.OrderByDescending(x => x.Value).ToDictionary(p => p.Key, p => p.Value);
 
-            return occurencesRanking.Select(p => p.Key).Where(p => !StopList.Contains(p)).Take(200).ToList();
+            for (int i = 0; i < occurencesRanking.Count; i++)
+            {
+                occurencesRanking[occurencesRanking.ElementAt(i).Key] /= articles.Count;
+            }
+
+            return occurencesRanking.OrderByDescending(x => x.Value).Where(p => !StopList.Contains(p.Key)).Take(200).ToDictionary(p => p.Key, p => p.Value); ;
         }
 
         public static List<string> ExtractMeaningfulWords(Article article)

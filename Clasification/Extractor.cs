@@ -9,7 +9,7 @@ namespace Clasification
 {
     public abstract class Extractor
     {
-        public abstract void Train(List<Article> articles, List<string> keywords);
-        public abstract double ComputeFactor(Article article, List<string> keywords);
+        public abstract void Train(List<Article> articles);
+        public abstract double ComputeFactor(Article article);
     }
 }

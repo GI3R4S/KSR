@@ -1,0 +1,32 @@
+﻿<Window x:Class="KSR_GUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:KSR_GUI"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid Name="guiGrid" Background="LightSteelBlue">
+        <TextBox Name="nInput" HorizontalAlignment="Left" Height="23" Margin="0,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="145" TextChanged="TextBox_TextChanged"/>
+        <TextBlock FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="0,3,0,0" TextWrapping="Wrap" Text="Współczynnik n algorytmu KNN" VerticalAlignment="Top" Width="145" Background="#FF89AA87"/>
+        <TextBox x:Name="articleAmountCount" HorizontalAlignment="Left" Height="23" Margin="165,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="145" TextChanged="TextBox_TextChanged"/>
+        <TextBlock FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="165,3,0,0" TextWrapping="Wrap" Text="Ilość artykułów " VerticalAlignment="Top" Width="145" Background="#FF89AA87" Height="37"/>
+        <TextBox x:Name="trainingDataPercentageInput" HorizontalAlignment="Left" Height="23" Margin="330,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="145" TextChanged="TextBox_TextChanged"/>
+        <TextBlock FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="330,3,0,0" TextWrapping="Wrap" Text="Udział danych treningowych(%)" VerticalAlignment="Top" Width="145" Background="#FF89AA87"/>
+        <CheckBox Content="Ekstraktor 1." HorizontalAlignment="Left" Margin="686,45,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked"/>
+        <CheckBox Content="Ekstraktor 2." HorizontalAlignment="Left" Margin="686,65,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked"/>
+        <CheckBox Content="Ekstraktor 3." HorizontalAlignment="Left" Margin="686,85,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked"/>
+        <CheckBox Content="Ekstraktor 4." HorizontalAlignment="Left" Margin="686,105,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked"/>
+        <CheckBox Content="Ekstraktor 5." HorizontalAlignment="Left" Margin="686,125,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked"/>
+        <CheckBox Content="Ekstraktor 6." HorizontalAlignment="Left" Margin="686,145,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked"/>
+        <TextBlock FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="655,0,0,0" TextWrapping="Wrap" Text="Wybór ekstraktorów" VerticalAlignment="Top" Width="137" Background="#FF89AA87" Height="37" RenderTransformOrigin="0.379,0.405"/>
+        <TextBlock FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="494,0,0,0" TextWrapping="Wrap" Text="Wybór metryki" VerticalAlignment="Top" Width="145" Background="#FF89AA87" Height="37"/>
+        <ComboBox  HorizontalAlignment="Left" Margin="494,46,0,0" VerticalAlignment="Top" Width="145">
+            <ComboBoxItem>Euklidesowa</ComboBoxItem>
+            <ComboBoxItem>Uliczna</ComboBoxItem>
+            <ComboBoxItem>Czebyszewa</ComboBoxItem>
+        </ComboBox>
+        <Button Content="Rozpocznij naukę i wydrukuj wyniiki" HorizontalAlignment="Left" Margin="80,82,0,0" VerticalAlignment="Top" Width="495" Height="58" Click="Button_Click"/>
+
+    </Grid>
+</Window>

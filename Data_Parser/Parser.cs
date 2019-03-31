@@ -9,7 +9,7 @@ namespace Data_Parser
     {
         public static void Main(string[] args)
         {
-            List<Article> allArticles = ParseHtmlDocuments("..\\..\\..\\Resources\\");
+            List<Article> allArticles = ParseHtmlDocuments("..\\..\\..\\..\\Resources");
         }
 
 

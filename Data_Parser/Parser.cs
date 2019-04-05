@@ -104,17 +104,17 @@ namespace Data_Parser
                     {
                         case "BODY":
                             {
-                                body = child.InnerText.ToLower();
+                                body = child.InnerText;
                                 break;
                             }
                         case "TITLE":
                             {
-                                title = child.InnerText.ToLower();
+                                title = child.InnerText;
                                 break;
                             }
                         case "DATELINE":
                             {
-                                dateline = child.InnerText.ToLower();
+                                dateline = child.InnerText;
                                 break;
                             }
                     }

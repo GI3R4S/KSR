@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Category = Data_Parser.Article.Category;
+using Iveonik.Stemmers;
 
 namespace Clasification
 {
@@ -26,7 +27,6 @@ namespace Clasification
         private static void Main(string[] args)
         {
 
-
             LoadStoplists();
 
             #region LoadFilterAndDivideArticles
@@ -46,31 +46,22 @@ namespace Clasification
             #endregion
 
             #region CreateWordFrequencyRanking
-            Dictionary<string, Dictionary<string, double>> rankingsOfOccurences = new Dictionary<string, Dictionary<string, double>>();
+            List<string> rankingsOfOccurences = new List<string>();
+            rankingsOfOccurences = CreateWordsOccurenceFrequencyRanking(trainingData);
 
-            foreach (var item in labelArticlesMap)
-            {
-                rankingsOfOccurences.Add(item.Key, CreateWordsOccurenceFrequencyRanking(item.Value).Take(100).ToDictionary(p => p.Key, p => p.Value));
-            }
             #endregion
 
             #region TrainExtractors
-            Dictionary<string, Extractor> extractors = new Dictionary<string, Extractor>();
+            List<Extractor> extractors = new List<Extractor>();
 
             Stopwatch time = new Stopwatch();
             time.Start();
-            foreach (var place in Places)
-            {
-                extractors.Add(place, new KeywordsDensityExtractor(rankingsOfOccurences[place]));
-                extractors[place].Train(labelArticlesMap[place]);
-            }
+            Trainer trainer = new Trainer(new List<bool>() { true, true, true, true, true, true, true, true }, rankingsOfOccurences.Take(50).ToList(), trainingData);
             time.Stop();
             #endregion
 
             #region PrepareArticlesForColdStart
             List<Article> articlesForColdStart = ExtractItemsForColdStart(trainingData, 10);
-
-            //Dictionary<List<double>, Article> articlesAndVectorsOfCharacteristics = new Dictionary<List<double>, Article>();
 
             List<KeyValuePair<Article, List<double>>> articlesAndVectorsOfCharacteristics = new List<KeyValuePair<Article, List<double>>>();
 
@@ -82,93 +73,108 @@ namespace Clasification
             #endregion
 
 
-            Dictionary<List<double>, Article> knnMap = new Dictionary<List<double>, Article>();
+            List<KeyValuePair<Article, List<double>>> knnMap = new List<KeyValuePair<Article, List<double>>>();
 
-            foreach(Article article in testData)
+            foreach (Article article in testData)
             {
-                knnMap.Add(CreateVectorOfCharacteristics(article, extractors), article);
+                knnMap.Add(new KeyValuePair<Article, List<double>>(article, CreateVectorOfCharacteristics(article, extractors)));
             }
 
             bool isAnyDifference = false;
             int nFactor = 5;
 
-            foreach(var pair in knnMap.Where(p => p.Value.AssignedLabel == ""))
+            #region KnnFirstPhase
+            foreach(var pair in knnMap.Where(p => p.Key.AssignedLabel == ""))
             {
-                DistanceInMetric comparer = new DistanceInMetric(Metrics.EuclideanMetricDistance, pair.Key);
-                articlesAndVectorsOfCharacteristics.Sort();
-                Console.Write("KEK");
-            }
+                DistanceInMetric comparer = new DistanceInMetric(Metrics.EuclideanMetricDistance, pair.Value);
+                articlesAndVectorsOfCharacteristics.Sort(comparer);
+                var neighbourhood = articlesAndVectorsOfCharacteristics.Take(nFactor).ToList();
+                var groups = neighbourhood.GroupBy(p => p.Key.Places[0]);
 
-            while(!isAnyDifference)
+                int maxCardinality = 0;
+                int secondCardinality = 0;
+
+                foreach(var group in groups)
+                {
+                    int cardinality = group.Count();
+                    if (cardinality > maxCardinality)
+                    {
+                        maxCardinality = cardinality;
+                    }
+                    else if(cardinality > secondCardinality || cardinality == secondCardinality)
+                    {
+                        secondCardinality = cardinality;
+                    }
+                }
+
+                if(maxCardinality != secondCardinality)
+                {
+                    pair.Key.AssignedLabel = groups.Where(p => p.Count() == maxCardinality).ElementAt(0).ElementAt(0).Key.AssignedLabel;
+                }
+            }
+#endregion
+
+            knnMap.InsertRange(0, articlesAndVectorsOfCharacteristics);
+            bool isAnyChangePresent = true;
+
+            #region KnnSecondPhase
+            while(isAnyChangePresent)
             {
+                bool isAnythingChanged = false;
+                foreach (var pair in knnMap)
+                {
+                    DistanceInMetric comparer = new DistanceInMetric(Metrics.EuclideanMetricDistance, pair.Value);
 
-            }
+                    var ArticlesApartCurrentOne = knnMap.Where(p => p.Key != pair.Key).ToList();
+                    ArticlesApartCurrentOne.Sort(comparer);
+                    var neighbourhood = ArticlesApartCurrentOne.Take(nFactor).ToList();
+                    var groups = neighbourhood.GroupBy(p => p.Key.Places[0]);
 
-            #region KNN
-                
+                    int maxCardinality = 0;
+                    int secondCardinality = 0;
+
+                    foreach (var group in groups)
+                    {
+                        int cardinality = group.Count();
+                        if (cardinality > maxCardinality)
+                        {
+                            maxCardinality = cardinality;
+                        }
+                        else if (cardinality > secondCardinality || cardinality == secondCardinality)
+                        {
+                            secondCardinality = cardinality;
+                        }
+                    }
+
+                    if (maxCardinality != secondCardinality)
+                    {
+                        if (pair.Key.AssignedLabel != groups.Where(p => p.Count() == maxCardinality).ElementAt(0).ElementAt(0).Key.AssignedLabel)
+                        {
+                            pair.Key.AssignedLabel = groups.Where(p => p.Count() == maxCardinality).ElementAt(0).ElementAt(0).Key.AssignedLabel;
+                            isAnythingChanged = true;
+                        }
+                    }
+                }
+
+                if(!isAnythingChanged)
+                {
+                    isAnyChangePresent = false;
+                }
+            };
             #endregion
-            //int failures = 0;
-            //int successes = 0;
-
-            //foreach(Article article in trainingData)
-            //{
-            //    string actualLabel = article.Places[0];
-
-            //    int index = 0;
-            //    double max = 0;
-
-            //    int currentIndex = 0;
-            //    foreach(var extractor in extractors)
-            //    {
-            //        double tmp = extractor.Value.ComputeFactor(article);
-            //        if(tmp > max)
-            //        {
-            //            max = tmp;
-            //            index = currentIndex;
-            //        }
-            //        currentIndex++;
-            //    }
-
-            //    if (extractors.ElementAt(index).Key == actualLabel)
-            //    {
-            //        successes++;
-            //    }
-
-            //    else
-            //    {
-            //        failures++;
-            //    }
-            //}
-
-
-
-
             Console.WriteLine("");
         }
 
-        public static List<double> CreateVectorOfCharacteristics(Article article, Dictionary<string, Extractor> extractors)
+        public static List<double> CreateVectorOfCharacteristics(Article article, List<Extractor> extractors)
         {
             List<double> vectorOfCharacteristics = new List<double>();
 
-            foreach(var nameExtractorPair in extractors)
+            foreach(Extractor extractor in extractors)
             {
-                vectorOfCharacteristics.Add(nameExtractorPair.Value.ComputeFactor(article));    
+                vectorOfCharacteristics.Add(extractor.ComputeFactor(article));    
             }
 
             return vectorOfCharacteristics;
-        }
-        public static List<string> LoadStaticListOfKeywords(string filePath)
-        {
-            List<string> toReturn = new List<string>();
-            using (StreamReader sr = new StreamReader(filePath))
-            {
-                string text = sr.ReadToEnd();
-                text = text.ToLower();
-                text = text.Replace("\r", "");
-                List<string> words = text.Split('\n').ToList();
-                words.RemoveAll(p => p.Length < 3 || p.Any(c => Char.IsDigit(c)));
-                return words;
-            }
         }
         public static List<double> ComputeVectorOfCharacteristics(Article article, List<Func<Article, double>> funcs)
         {
@@ -283,33 +289,32 @@ namespace Clasification
             return randomOutput;
         }
 
-        public static Dictionary<string, double> CreateWordsOccurenceFrequencyRanking(List<Article> articles)
+        public static List<string> CreateWordsOccurenceFrequencyRanking(List<Article> articles)
         {
             Dictionary<string, double> occurencesRanking = new Dictionary<string, double>();
+            EnglishStemmer englishStemmer = new EnglishStemmer();
 
             foreach (Article article in articles)
             {
                 List<string> allWords = ExtractMeaningfulWords(article);
 
+
                 for (int i = 0; i < allWords.Count; i++)
                 {
-                    if (occurencesRanking.ContainsKey(allWords[i]))
+                    string word = englishStemmer.Stem(allWords[i]);
+
+                    if (occurencesRanking.ContainsKey(word))
                     {
-                        occurencesRanking[allWords[i]]++;
+                        occurencesRanking[word]++;
                     }
                     else
                     {
-                        occurencesRanking.Add(allWords[i], 1);
+                        occurencesRanking.Add(word, 1);
                     }
                 }
             }
 
-            for (int i = 0; i < occurencesRanking.Count; i++)
-            {
-                occurencesRanking[occurencesRanking.ElementAt(i).Key] /= articles.Count;
-            }
-
-            return occurencesRanking.OrderByDescending(x => x.Value).Where(p => !StopList.Contains(p.Key)).Take(200).ToDictionary(p => p.Key, p => p.Value); ;
+            return occurencesRanking.OrderByDescending(x => x.Value).Where(p => !StopList.Contains(p.Key)).Select(p => p.Key).ToList();
         }
 
         public static List<string> ExtractMeaningfulWords(Article article)

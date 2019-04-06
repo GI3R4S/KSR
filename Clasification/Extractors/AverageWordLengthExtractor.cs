@@ -15,7 +15,7 @@ namespace Clasification
             int countOfWords = 0;
             int countOfLetters = 0;
 
-            List<string> articleWords = Program.ExtractMeaningfulWords(article);
+            List<string> articleWords = Utils.ExtractMeaningfulWords(article);
             countOfWords += articleWords.Count;
 
             foreach (string word in articleWords)
@@ -35,7 +35,7 @@ namespace Clasification
 
             foreach (Article article in articles)
             {
-                List<string> articleWords = Program.ExtractMeaningfulWords(article);
+                List<string> articleWords = Utils.ExtractMeaningfulWords(article);
                 countOfWords += articleWords.Count;
 
                 foreach (string word in articleWords)

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Clasification
 {
-    class Trainer
+    public class Trainer
     {
         private List<bool> ExtractorsAvailability = new List<bool>
         {

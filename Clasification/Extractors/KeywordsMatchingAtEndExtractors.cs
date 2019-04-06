@@ -22,7 +22,7 @@ namespace Clasification
             int countOfWords = 0;
             double totalFactorValue = 0;
 
-            List<string> articleWords = Program.ExtractMeaningfulWords(article);
+            List<string> articleWords = Utils.ExtractMeaningfulWords(article);
             if (articleWords.Count > 10)
             {
                 int takeNWords = articleWords.Count / 10;
@@ -56,7 +56,7 @@ namespace Clasification
 
             foreach (Article article in articles)
             {
-                List<string> articleWords = Program.ExtractMeaningfulWords(article);
+                List<string> articleWords = Utils.ExtractMeaningfulWords(article);
                 if (articleWords.Count > 10)
                 {
                     int takeNWords = articleWords.Count / 10;

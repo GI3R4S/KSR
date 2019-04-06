@@ -94,5 +94,15 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Clasification\Clasification.csproj">
+      <Project>{7896b670-1c41-4109-8315-51de2eaa684b}</Project>
+      <Name>Clasification</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Data_Parser\Data_Parser.csproj">
+      <Project>{7923e184-d0b7-496a-a6ca-fdcab75bc621}</Project>
+      <Name>Data_Parser</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

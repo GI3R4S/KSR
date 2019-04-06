@@ -7,12 +7,6 @@ namespace Data_Parser
 {
     public class Parser
     {
-        public static void Main(string[] args)
-        {
-            List<Article> allArticles = ParseHtmlDocuments("..\\..\\..\\..\\Resources");
-        }
-
-
         public static List<Article> ParseHtmlDocuments(string directoryPath)
         {
             List<string> resourceFiles = new List<string>(Directory.GetFiles(directoryPath).Where(p => p.EndsWith(".sgm")));
@@ -31,7 +25,7 @@ namespace Data_Parser
             List<Article> toReturn = new List<Article>();
             HtmlDocument sgml = new HtmlDocument();
             sgml.Load(filePath);
-
+            
             List<HtmlNode> articlesNodes = sgml.DocumentNode.Descendants("REUTERS").ToList();
             foreach (HtmlNode articleNode in articlesNodes)
             {

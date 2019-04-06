@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Clasification
 {
-    class DistanceInMetric : IComparer<KeyValuePair<Article, List<double>>>
+    public class DistanceInMetric : IComparer<KeyValuePair<Article, List<double>>>
     {
         private Func<List<double>, List<double>, double> Function;
         private List<double> Point;

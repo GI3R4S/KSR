@@ -8,11 +8,11 @@ namespace Clasification
     {
         public override double ComputeFactor(Article article)
         {
-            List<string> articleWords = Program.ExtractMeaningfulWords(article);
+            List<string> articleWords = Utils.ExtractMeaningfulWords(article);
             
             double totalDensityFactor = articleWords.Count;
             double z = totalDensityFactor - Average;
-            return 1 / (1 + Math.Pow(Math.E, 16.0 * (-z)));
+            return 1 / (1 + Math.Pow(Math.E,(-z)));
         }
 
         public override void Train(List<Article> articles)
@@ -21,7 +21,7 @@ namespace Clasification
 
             foreach (Article article in articles)
             {
-                List<string> articleWords = Program.ExtractMeaningfulWords(article);
+                List<string> articleWords = Utils.ExtractMeaningfulWords(article);
                 
                 countOfWords += articleWords.Count;
             }

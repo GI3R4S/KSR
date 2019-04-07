@@ -5,27 +5,26 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:KSR_GUI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="462" Width="800">
-    <Grid Name="guiGrid" Background="LightSteelBlue" Margin="0,0,0,-1">
+        Title="MainWindow" Height="422" Width="800">
+    <Grid Name="guiGrid" Background="LightSteelBlue" Margin="0,0,0,4">
         <Grid.RowDefinitions>
             <RowDefinition Height="25*"/>
             <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
-        <TextBox Name="nInput" HorizontalAlignment="Left" Height="23" Margin="10,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="135" TextChanged="TextBox_TextChanged"/>
-        <TextBlock FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" Text="Współczynnik n algorytmu KNN" VerticalAlignment="Top" Width="135" Background="#FF89AA87"/>
-        <TextBox Name="countOfArticlesInput" HorizontalAlignment="Left" Height="23" Margin="165,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="TextBox_TextChanged"/>
-        <TextBlock FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="165,3,0,0" TextWrapping="Wrap" Text="Ilość artykułów " VerticalAlignment="Top" Width="120" Background="#FF89AA87" Height="37"/>
-        <TextBox Name="trainingDataPercentageInput" HorizontalAlignment="Left" Height="23" Margin="310,46,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="145" TextChanged="TextBox_TextChanged"/>
-        <TextBlock FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="310,3,0,0" TextWrapping="Wrap" Text="Udział danych treningowych(%)" VerticalAlignment="Top" Width="145" Background="#FF89AA87"/>
+        <TextBox Text="10" TextAlignment="Center" Name="kInput" HorizontalAlignment="Left" Height="23" Margin="10,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="135" TextChanged="TextBox_TextChanged"/>
+        <TextBlock FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="135" Background="#FF89AA87"><Run Text="Współczynnik "/><Run Text="k"/><Run Text=" algorytmu KNN"/></TextBlock>
+        <TextBox Name="countOfArticlesInput" HorizontalAlignment="Left" Height="23" Margin="165,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="TextBox_TextChanged" Text="1000" TextAlignment="Center"/>
+        <TextBlock FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="165,3,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Background="#FF89AA87" Height="37" Text="Ilość artyułów do wczytania"/>
+        <TextBox Text="60" TextAlignment="Center"  Name="trainingDataPercentageInput" HorizontalAlignment="Left" Height="23" Margin="320,47,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="145" TextChanged="TextBox_TextChanged"/>
+        <TextBlock FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="320,4,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="145" Background="#FF89AA87"><Run Text="Udział danych "/><Run Text="testowych"/><Run Text="(%)"/></TextBlock>
         <TextBlock  Text="Ekstraktory" FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="601,4,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="181" Background="#FF89AA87" Height="37" RenderTransformOrigin="0.379,0.405"/>
-        <TextBlock FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="470,4,0,0" TextWrapping="Wrap" Text="Wybór metryki" VerticalAlignment="Top" Width="116" Background="#FF89AA87" Height="37"/>
-        <ComboBox  Name="selectMetricCombobox" HorizontalAlignment="Left" Margin="470,47,0,0" VerticalAlignment="Top" Width="116">
-            <ComboBoxItem>Euklidesowa</ComboBoxItem>
+        <TextBlock FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="480,5,0,0" TextWrapping="Wrap" Text="Wybór metryki" VerticalAlignment="Top" Width="116" Background="#FF89AA87" Height="37"/>
+        <ComboBox SelectedIndex="0" Name="selectMetricCombobox" HorizontalAlignment="Left" Margin="480,48,0,0" VerticalAlignment="Top" Width="116">
+            <ComboBoxItem Name="Euklidesowa">Euklidesowa</ComboBoxItem>
             <ComboBoxItem>Uliczna</ComboBoxItem>
             <ComboBoxItem>Czebyszewa</ComboBoxItem>
         </ComboBox>
-        <Button Name="beginLearningButton"  IsEnabled="False" Content="Rozpocznij naukę" HorizontalAlignment="Left" Margin="336,74,0,0" VerticalAlignment="Top" Width="110" Height="75" Click="Button_Click"/>
-        <StackPanel Name="extractorsChoiceStackPanel" HorizontalAlignment="Left" Height="280" Margin="595,55,0,0" VerticalAlignment="Top" Width="180" RenderTransformOrigin="0.5,0.5">
+        <StackPanel Name="extractorsChoiceStackPanel" HorizontalAlignment="Left" Height="115" Margin="610,75,0,0" VerticalAlignment="Top" Width="180" RenderTransformOrigin="0.5,0.5">
             <StackPanel.Resources>
                 <Style TargetType="{x:Type TextBox}">
                     <Setter Property="Margin" Value="0,40,0,0"/>
@@ -39,49 +38,32 @@
                     <TranslateTransform X="-0.49"/>
                 </TransformGroup>
             </StackPanel.RenderTransform>
-            <CheckBox Content="Liczba akronimów." HorizontalAlignment="Left"  VerticalAlignment="Top" IsChecked="True"/>
-            <CheckBox Content="Śr. liczba słów w artykule" HorizontalAlignment="Left"  VerticalAlignment="Top" IsChecked="True"/>
-            <CheckBox Content="Śr. długości słowa" HorizontalAlignment="Left" VerticalAlignment="Top" IsChecked="True"/>
-            <CheckBox Content="Średnia liczba spółgłosek" HorizontalAlignment="Left"  VerticalAlignment="Top" IsChecked="True"/>
-            <CheckBox Content="Miara N-Gram na końcu" HorizontalAlignment="Left"  VerticalAlignment="Top" IsChecked="True"/>
-            <CheckBox Content="Miara N-Gram na początku" HorizontalAlignment="Left"  VerticalAlignment="Top" IsChecked="True"/>
-            <CheckBox Content="Słowa zaczynające się z wielkiej litery" HorizontalAlignment="Left"  VerticalAlignment="Top" IsChecked="True"/>
-            <CheckBox Content="Średnia liczba samogłosek" HorizontalAlignment="Left" VerticalAlignment="Top" IsChecked="True"/>
+            <CheckBox Content="Liczba akronimów" HorizontalAlignment="Left"  VerticalAlignment="Top" IsChecked="True"/>
+            <CheckBox Content="Liczba słów ogółem" HorizontalAlignment="Left"  VerticalAlignment="Top" IsChecked="True"/>
+            <CheckBox Content="Liczba słów długich" HorizontalAlignment="Left" VerticalAlignment="Top" IsChecked="True"/>
+            <CheckBox Content="Liczba słów średnich" HorizontalAlignment="Left"  VerticalAlignment="Top" IsChecked="True"/>
+            <CheckBox Content="Liczba słów krótkich" HorizontalAlignment="Left"  VerticalAlignment="Top" IsChecked="True"/>
+            <CheckBox Content="Liczba słów z wielkiej litery" HorizontalAlignment="Left" VerticalAlignment="Top" IsChecked="True"/>
+            <CheckBox Content="Liczba samogłosek" HorizontalAlignment="Left" VerticalAlignment="Top" IsChecked="True"/>
         </StackPanel>
-        <Button Name="beginClasificationButton" IsEnabled="False" Content="Rozpocznij klasyfikację" HorizontalAlignment="Left" Margin="451,74,0,0" VerticalAlignment="Top" Width="135" Height="75" Click="Button_Click"/>
-        <TextBlock IsEnabled="False" FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="10,153,0,0" TextWrapping="Wrap" Text="Statystyki" VerticalAlignment="Top" Width="165" Background="#FF89AA87" Height="29"/>
+        <Button Name="beginClasificationButton" IsEnabled="True" Content="Rozpocznij klasyfikację" HorizontalAlignment="Left" Margin="395,277,0,0" VerticalAlignment="Top" Width="343" Height="48" Click="Button_Click"/>
+        <TextBlock IsEnabled="False" FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="10,153,0,0" TextWrapping="Wrap" Text="Statystyki" VerticalAlignment="Top" Width="305" Background="#FF89AA87" Height="29"/>
         <TextBlock IsEnabled="False" FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="10,187,0,0" TextWrapping="Wrap" Text="Sklasyfikowane poprawnie" VerticalAlignment="Top" Width="165" Background="#FF89AA87" Height="44"/>
-        <TextBlock IsEnabled="False" FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="10,236,0,0" TextWrapping="Wrap" Text="Sklasyfikowane niepoprawnie" VerticalAlignment="Top" Width="165" Background="#FF89AA87" Height="36"/>
-        <TextBlock IsEnabled="False" FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="10,277,0,0" TextWrapping="Wrap" Text="Niesklasyfikowane" VerticalAlignment="Top" Width="165" Background="#FF89AA87" Height="29" RenderTransformOrigin="0.515,-0.69"/>
-        <TextBlock IsEnabled="False" FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="10,349,0,0" TextWrapping="Wrap" Text="Dokładność" VerticalAlignment="Top" Width="165" Background="#FF89AA87" Height="20"/>
-        <TextBlock IsEnabled="False" FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="10,374,0,0" TextWrapping="Wrap" Text="Skuteczność" VerticalAlignment="Top" Width="165" Background="#FF89AA87" Height="21"/>
-        <TextBlock IsEnabled="False" FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="10,5,0,0" TextWrapping="Wrap" Text="Czułość" VerticalAlignment="Top" Width="165" Background="#FF89AA87" Height="22" Grid.Row="1"/>
-        <TextBlock IsEnabled="False" FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="189,153,0,0" TextWrapping="Wrap" Text="Po 1. iteracji" VerticalAlignment="Top" Width="126" Background="#FF89AA87" Height="29"/>
-        <TextBlock IsEnabled="False" FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="10,311,0,0" TextWrapping="Wrap" Text="Ogółem" VerticalAlignment="Top" Width="165" Background="#FF89AA87" Height="29"/>
-        <TextBlock IsEnabled="False" FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="320,153,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="125" Background="#FF89AA87" Height="29"><Run Text="Po "/><Run Text="2"/><Run Text=". iteracji"/></TextBlock>
-        <TextBlock IsEnabled="False" FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="450,153,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="127" Background="#FF89AA87" Height="29"><Run Text="Po "/><Run Text="3"/><Run Text=". iteracji"/></TextBlock>
-        <TextBox IsEnabled="False" HorizontalAlignment="Left" Height="43" Margin="189,188,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="126"/>
-        <TextBox IsEnabled="False" HorizontalAlignment="Left" Height="43" Margin="320,188,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="126"/>
-        <TextBox IsEnabled="False" HorizontalAlignment="Left" Height="43" Margin="451,188,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="126"/>
-        <TextBox IsEnabled="False" HorizontalAlignment="Left" Height="34" Margin="189,238,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="126"/>
-        <TextBox IsEnabled="False" HorizontalAlignment="Left" Height="34" Margin="320,238,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="126"/>
-        <TextBox IsEnabled="False" HorizontalAlignment="Left" Height="34" Margin="450,238,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="126"/>
-        <TextBox IsEnabled="False" HorizontalAlignment="Left" Height="29" Margin="189,277,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="126"/>
-        <TextBox IsEnabled="False" HorizontalAlignment="Left" Height="29" Margin="320,277,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="126"/>
-        <TextBox IsEnabled="False" HorizontalAlignment="Left" Height="29" Margin="450,277,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="126"/>
-        <TextBox IsEnabled="False" HorizontalAlignment="Left" Height="29" Margin="189,311,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="126"/>
-        <TextBox IsEnabled="False" HorizontalAlignment="Left" Height="29" Margin="320,311,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="126"/>
-        <TextBox IsEnabled="False" HorizontalAlignment="Left" Height="29" Margin="450,311,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="126"/>
-        <TextBox IsEnabled="False" HorizontalAlignment="Left" Height="24" Margin="189,345,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="126"/>
-        <TextBox IsEnabled="False" HorizontalAlignment="Left" Height="24" Margin="320,345,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="126"/>
-        <TextBox IsEnabled="False" HorizontalAlignment="Left" Height="24" Margin="451,345,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="126"/>
-        <TextBox IsEnabled="False" HorizontalAlignment="Left" Height="24" Margin="189,374,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="126"/>
-        <TextBox IsEnabled="False" HorizontalAlignment="Left" Height="24" Margin="320,374,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="126"/>
-        <TextBox IsEnabled="False" HorizontalAlignment="Left" Height="24" Margin="451,374,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="126"/>
-        <TextBox IsEnabled="False" HorizontalAlignment="Left" Height="24" Margin="189,3,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="126" Grid.Row="1"/>
-        <TextBox IsEnabled="False" HorizontalAlignment="Left" Height="24" Margin="320,3,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="126" Grid.Row="1"/>
-        <TextBox IsEnabled="False" HorizontalAlignment="Left" Height="24" Margin="450,3,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="126" Grid.Row="1"/>
-        <TextBlock Name="statusTextBlock"  FontSize="18px" FontWeight="Bold" TextAlignment="Center"  HorizontalAlignment="Left" Margin="10,74,0,0" TextWrapping="Wrap" Text="Trwa ładowanie zasobów..." VerticalAlignment="Top" Height="74" Width="125"/>
-        <Button Name="loadResourcesButton"  Content="Wczytaj zasoby" HorizontalAlignment="Left" Margin="189,73,0,0" VerticalAlignment="Top" Width="142" Height="75" Click="Button_Click"/>
+        <TextBlock IsEnabled="False" FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="10,238,0,0" TextWrapping="Wrap" Text="Sklasyfikowane niepoprawnie" VerticalAlignment="Top" Width="165" Background="#FF89AA87" Height="42"/>
+        <TextBlock IsEnabled="False" FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="10,285,0,0" TextWrapping="Wrap" Text="Dokładność" VerticalAlignment="Top" Width="165" Background="#FF89AA87" Height="40"/>
+        <TextBox  Name="succededDisplay" TextAlignment="Center" IsReadOnly="True" HorizontalAlignment="Left" Height="43" Margin="189,190,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="126"/>
+        <TextBox  Name="failedDisplay" TextAlignment="Center" IsReadOnly="True" HorizontalAlignment="Left" Height="42" Margin="189,238,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="126"/>
+        <TextBox  Name="accuracityDisplay" TextAlignment="Center" IsReadOnly="True" HorizontalAlignment="Left" Height="40" Margin="189,285,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="126"/>
+        <TextBlock Name="statusTextBlock"  FontSize="18px" FontWeight="Bold" TextAlignment="Center"  HorizontalAlignment="Left" Margin="10,85,0,0" TextWrapping="Wrap" Text="Trwa ładowanie zasobów..." VerticalAlignment="Top" Height="63" Width="275"/>
+        <RadioButton Name="customCharacteristicsRadioButton" IsChecked="True" Content="Custom characteristics" HorizontalAlignment="Left" Margin="601,53,0,0" VerticalAlignment="Top" Checked="RadioButton_Checked"/>
+        <RadioButton Name="dictionaryMatchingRadioButton" IsChecked="False" Content="Dictionary matching" HorizontalAlignment="Left" Margin="601,190,0,0" VerticalAlignment="Top" Checked="DictionaryMatchingRadioButton_Checked"/>
+        <TextBlock FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="480,75,0,0" TextWrapping="Wrap" Text="Kategoria klasyfikacji" VerticalAlignment="Top" Width="116" Background="#FF89AA87" Height="37"/>
+        <ComboBox SelectedIndex="0" Name="selectCategoryComboBox" HorizontalAlignment="Left" Margin="480,117,0,0" VerticalAlignment="Top" Width="116">
+            <ComboBoxItem Content="Places"/>
+            <ComboBoxItem Content="People"/>
+        </ComboBox>
+        <TextBlock FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="320,75,0,0" TextWrapping="Wrap" Text="Ilość przebiegów klasfikacji" VerticalAlignment="Top" Width="145" Background="#FF89AA87" Height="37"/>
+        <TextBox Name="countOfLoopsInput" Text="10" TextAlignment="Center" HorizontalAlignment="Left" Height="23" Margin="320,117,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="145" TextChanged="TextBox_TextChanged"/>
+        <CheckBox Name="createdDataCheckBox" Content="Własne pliki danych" HorizontalAlignment="Left" Margin="320,153,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked_1" Unchecked="CheckBox_Checked_1"/>
     </Grid>
 </Window>

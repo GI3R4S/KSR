@@ -66,21 +66,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extractors\AverageArticleLengthExtractor.cs" />
-    <Compile Include="Extractors\AverageWordLengthExtractor.cs" />
-    <Compile Include="Extractors\ConsonantFrequencyExtractor.cs" />
-    <Compile Include="Extractors\AcronymExtractor.cs" />
-    <Compile Include="DistanceInMetric.cs" />
+    <Compile Include="DictionaryMatcher.cs" />
+    <Compile Include="Extractors\AcronymsCountExtractor.cs" />
+    <Compile Include="Extractors\ArticleWordsCountExtractor.cs" />
     <Compile Include="Extractors\Extractor.cs" />
-    <Compile Include="Extractors\KeywordsMatchingAtEndExtractors.cs" />
-    <Compile Include="Extractors\KeywordsMatchingOnBeginingExtractor.cs" />
+    <Compile Include="Extractors\LongWordsCountExtractor.cs" />
+    <Compile Include="Extractors\MediumWordsCountExtractor.cs" />
+    <Compile Include="Extractors\ShortWordsCountExtractor.cs" />
+    <Compile Include="KNN.cs" />
     <Compile Include="Metrics.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ListExtensions.cs" />
     <Compile Include="StringExtensions.cs" />
-    <Compile Include="Extractors\UpperCaseWordsExtractor.cs" />
-    <Compile Include="Extractors\VowelFrequencyExtractor.cs" />
-    <Compile Include="Trainer.cs" />
+    <Compile Include="Extractors\UpperCaseWordsCountExtractor.cs" />
+    <Compile Include="Extractors\VowelCountExtractor.cs" />
+    <Compile Include="CustomCharacteristicsExtractor.cs" />
+    <Compile Include="WeightsComputer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

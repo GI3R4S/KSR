@@ -7,6 +7,10 @@ namespace Data_Parser
 {
     public class Parser
     {
+        public static void Main(string [] args)
+        {
+
+        }
         public static List<Article> ParseHtmlDocuments(string directoryPath)
         {
             List<string> resourceFiles = new List<string>(Directory.GetFiles(directoryPath).Where(p => p.EndsWith(".sgm")));
@@ -91,6 +95,7 @@ namespace Data_Parser
                 string title = "";
                 string dateline = "";
                 string body = "";
+                string author = "";
 
                 foreach (HtmlNode child in textNode.ChildNodes)
                 {
@@ -111,6 +116,11 @@ namespace Data_Parser
                                 dateline = child.InnerText;
                                 break;
                             }
+                        case "AUTHOR":
+                            {
+                                author = child.InnerText;
+                                break;
+                            }
                     }
                 }
 
@@ -127,6 +137,7 @@ namespace Data_Parser
                 article.Text.Body = body;
                 article.Text.Dateline = dateline;
                 article.Text.Title = title;
+                article.Text.Author = author;
 
                 toReturn.Add(article);
             }

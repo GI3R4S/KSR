@@ -9,8 +9,6 @@ namespace Clasification
 {
     public abstract class Extractor
     {
-        protected double Average { get; set; } = 0;
-
         protected static HashSet<char> Vowels = new HashSet<char>()
         {
             'a',
@@ -27,7 +25,5 @@ namespace Clasification
             'Y'
         };
         public abstract double ComputeFactor(Article article);
-
-        public abstract void Train(List<Article> articles);
     }
 }

@@ -19,11 +19,8 @@ namespace Data_Parser
         public Text Text { get; set; } = new Text();
 
         public string AssignedLabel { get; set; } = "";
+        public string ActualLabel { get; set; } = "";
 
-        public void InitalizeAssignedLabel()
-        {
-            AssignedLabel = Places[0];
-        }
         public enum Category
         {
             ETopics,

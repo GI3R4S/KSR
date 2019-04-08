@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Data_Parser;
-using Clasification;
 using System.Linq;
 
-namespace Clasification
+namespace Classification
 {
     class AcronymsCountExtractor : Extractor
     {

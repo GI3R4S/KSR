@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-namespace Clasification
+namespace Classification
 {
     class ShortWordsCountExtractor : Extractor
     {

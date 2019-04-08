@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 
 
-namespace Clasification
+namespace Classification
 {
     public class CustomCharacteristicsExtractor : WeightsComputer
     {

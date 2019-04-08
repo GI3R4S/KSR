@@ -1,8 +1,7 @@
-﻿using Clasification;
+﻿using Classification;
 using Data_Parser;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,14 +11,6 @@ namespace KSR_GUI
 {
     public partial class MainWindow : Window
     {
-        private enum Metryka
-        {
-            Euklidesowa,
-            Uliczna,
-            Czebyszewa
-        }
-
-        private Metryka metryka;
         private WeightsComputer weightsComputer;
 
         private List<Article> CurrentArticles { get; set; }
@@ -138,7 +129,6 @@ namespace KSR_GUI
                 succededDisplay.Text = assignedProperly.ToString();
                 failedDisplay.Text = assingedNotProperly.ToString();
                 accuracityDisplay.Text = (100.0 * assignedProperly / (assignedProperly + assingedNotProperly)).ToString() + "%";
-                Debug.Print("Dupa");
             }
         }
 

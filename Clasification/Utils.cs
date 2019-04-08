@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-namespace Clasification
+namespace Classification
 {
     public static class Utils
     {
@@ -32,12 +32,6 @@ namespace Clasification
                 "amd",
                 "nvidia"
             };
-
-        public static double ComputeCharacteristic(Article article, Func<Article, double> extractor)
-        {
-            return extractor(article);
-        }
-
 
         public static SortedSet<string> LoadStoplists()
         {
@@ -96,8 +90,6 @@ namespace Clasification
                 case Article.Category.EPeople:
                     {
                         articles = toFilter.Where(p => p.People.Count == 1).ToList();
-                        var xd = articles.GroupBy(p => p.People[0]);
-                        xd = xd.OrderBy(p => p.Count());
                         foreach (Article article in articles)
                         {
                             article.ActualLabel = article.People[0];
@@ -209,6 +201,5 @@ namespace Clasification
 
             return allWords;
         }
-
     }
 }

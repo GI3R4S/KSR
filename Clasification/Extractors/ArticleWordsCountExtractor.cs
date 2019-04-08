@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Clasification
+namespace Classification
 {
     class ArticleWordsCountExtractor : Extractor
     {

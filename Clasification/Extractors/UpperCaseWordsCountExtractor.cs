@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Data_Parser;
 
-namespace Clasification
+namespace Classification
 {
     class UpperCaseWorldsExtractor : Extractor
     {

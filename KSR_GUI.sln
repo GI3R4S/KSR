@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KSR_GUI", "KSR_GUI\KSR_GUI.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data_Parser", "Data_Parser\Data_Parser.csproj", "{7923E184-D0B7-496A-A6CA-FDCAB75BC621}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clasification", "Clasification\Clasification.csproj", "{7896B670-1C41-4109-8315-51DE2EAA684B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Classification", "Clasification\Classification.csproj", "{7896B670-1C41-4109-8315-51DE2EAA684B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

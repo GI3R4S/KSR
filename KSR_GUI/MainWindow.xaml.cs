@@ -84,21 +84,21 @@ namespace KSR_GUI
                     {
                         foreach (string place in Utils.Places)
                         {
-                            LabelArticlesMap.Add(place, FilteredArticles.Where(p => p.Places.Contains(place)).ToList());
+                            LabelArticlesMap.Add(place, TrainingSet.Where(p => p.Places.Contains(place)).ToList());
                         }
                     }
                     else if(selectCategoryComboBox.Text == "People")
                     {
                         foreach (string people in Utils.People)
                         {
-                            LabelArticlesMap.Add(people, FilteredArticles.Where(p => p.People.Contains(people)).ToList());
+                            LabelArticlesMap.Add(people, TrainingSet.Where(p => p.People.Contains(people)).ToList());
                         }
                     }
                     else if (selectCategoryComboBox.Text == "Orgs")
                     {
                         foreach (string org in Utils.Orgs)
                         {
-                            LabelArticlesMap.Add(org, FilteredArticles.Where(p => p.Orgs.Contains(org)).ToList());
+                            LabelArticlesMap.Add(org, TrainingSet.Where(p => p.Orgs.Contains(org)).ToList());
                         }
                     }
 

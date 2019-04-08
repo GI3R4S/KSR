@@ -33,18 +33,6 @@ namespace Classification
             Extractors.Add(new VowelCountExtractor());
         }
 
-        public void SetAvailabilityAndTrain(int aIndex, bool aAvailability)
-        {
-            ExtractorsAvailability[aIndex] = aAvailability;
-        }
-
-
-        public void AddNewExtractor(Extractor extractor, bool aAvailability = false)
-        {
-            Extractors.Add(extractor);
-            ExtractorsAvailability.Add(false);
-        }
-
         public List<double> GetWeights(Article article)
         {
             List<double> weights = new List<double>();

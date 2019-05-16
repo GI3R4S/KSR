@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Classification
 {
-    public class DictionaryMatcher : WeightsComputer
+    public class DictionaryMatcher : CharacteristicsExtractor
     {
         public List<string> Keywords = new List<string>();
         public DictionaryMatcher(List<string> aKeyWords)

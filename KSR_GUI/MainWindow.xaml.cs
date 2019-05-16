@@ -1,7 +1,10 @@
-﻿using Classification;
+﻿using Clasification.Serialization;
+using Classification;
 using Data_Parser;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,130 +14,126 @@ namespace KSR_GUI
 {
     public partial class MainWindow : Window
     {
-        private WeightsComputer weightsComputer;
+        private CharacteristicsExtractor characteristicExtractor;
 
         private List<Article> CurrentArticles { get; set; }
-        private List<Article> AllReutersArticles { get; set; }
+        private List<Article> DefaultArticles { get; set; }
         private List<Article> CustomArticles { get; set; }
         private SortedSet<string> StopList { get; set; }
+
+        private List<Article> ChosenSet = new List<Article>();
+        private List<Article> TrainingSet = new List<Article>();
+        private List<Article> TestingSet = new List<Article>();
         public MainWindow()
         {
             InitializeComponent();
             StopList = Utils.LoadStoplists();
-            AllReutersArticles = Parser.ParseHtmlDocuments("..\\..\\..\\Resources\\");
+            DefaultArticles = Parser.ParseHtmlDocuments("..\\..\\..\\Resources\\");
             CustomArticles = Parser.ParseHtmlDocument("..\\..\\..\\Resources\\myData.sgm");
-    }
-
-    private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
+            beginClasificationButton.IsEnabled = false;
+            saveSets.IsEnabled = false;
         }
 
-        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        private void Button_Click_Start_Clasification(object sender, RoutedEventArgs e)
         {
+            int assignedProperly = 0;
+            int assingedNotProperly = 0;
 
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender == beginClasificationButton)
+            Utils.DistributeArticles(ChosenSet, ref TrainingSet, ref TestingSet, int.Parse(trainingDataPercentageInput.Text));
+            for (int j = 0; j < int.Parse(countOfLoopsInput.Text); ++j)
             {
-                statusTextBlock.Text = "Wczytywanie zakończone";
+                Dictionary<string, List<Article>> labelArticlesMap = new Dictionary<string, List<Article>>();
+                SetExtractor();
+                PrepareLabelArticleMap(ref labelArticlesMap);
 
-                int assignedProperly = 0;
-                int assingedNotProperly = 0;
-
-                for (int j = 0; j < int.Parse(countOfLoopsInput.Text); j++)
+                //Taking some Articles from TrainingSet to resolve problem of cold start
+                List<Article> coldStart = new List<Article>();
+                foreach (var pair in labelArticlesMap)
                 {
-
-                    List<Article> FilteredArticles = new List<Article>();
-                    List<Article> TrainingSet = new List<Article>();
-                    List<Article> TestingSet = new List<Article>();
-                    Dictionary<string, List<Article>> LabelArticlesMap = new Dictionary<string, List<Article>>();
-
-                    PrepareDataCollections(ref FilteredArticles, ref TrainingSet, ref TestingSet);
-
-                    statusTextBlock.Text = "Trening ekstraktorów trwa";
-
-
-                    if ((bool)customCharacteristicsRadioButton.IsChecked)
-                    {
-                        List<bool> availability = new List<bool>();
-                        foreach (var child in extractorsChoiceStackPanel.Children)
-                        {
-                            CheckBox checkBox = (CheckBox)child;
-                            availability.Add(checkBox.IsChecked.Value);
-                        }
-                        weightsComputer = new CustomCharacteristicsExtractor(availability);
-                    }
-                    else
-                    {
-                        List<string> rankingsOfOccurences = new List<string>();
-                        rankingsOfOccurences = Utils.CreateWordsOccurenceFrequencyRanking(TrainingSet, StopList);
-                        weightsComputer = new DictionaryMatcher(rankingsOfOccurences.Take(100).ToList());
-                    }
-
-
-                    statusTextBlock.Text = "Trening zakończony";
-                    beginClasificationButton.IsEnabled = true;
-
-                    statusTextBlock.Text = "Proces klasyfikacji rozpoczęty";
-
-                    if (selectCategoryComboBox.Text == "Places")
-                    {
-                        foreach (string place in Utils.Places)
-                        {
-                            LabelArticlesMap.Add(place, TrainingSet.Where(p => p.Places.Contains(place)).ToList());
-                        }
-                    }
-                    else if(selectCategoryComboBox.Text == "People")
-                    {
-                        foreach (string people in Utils.People)
-                        {
-                            LabelArticlesMap.Add(people, TrainingSet.Where(p => p.People.Contains(people)).ToList());
-                        }
-                    }
-                    else if (selectCategoryComboBox.Text == "Orgs")
-                    {
-                        foreach (string org in Utils.Orgs)
-                        {
-                            LabelArticlesMap.Add(org, TrainingSet.Where(p => p.Orgs.Contains(org)).ToList());
-                        }
-                    }
-
-                    List<Article> coldStart = new List<Article>();
-                    foreach (var pair in LabelArticlesMap)
-                    {
-                        int amountToTake = TestingSet.Count / 10;
-                        coldStart.AddRange(pair.Value.Take(amountToTake > pair.Value.Count ? pair.Value.Count : amountToTake).ToList());
-                    }
-                    Dictionary<Article, List<double>> ColdStart = new Dictionary<Article, List<double>>();
-                    foreach (var item in coldStart)
-                    {
-                        ColdStart.Add(item, weightsComputer.GetWeights(item));
-                        item.AssignedLabel = item.ActualLabel;
-                    }
-                    Dictionary<Article, List<double>> KnnMap = new Dictionary<Article, List<double>>();
-                    foreach (var item in TestingSet)
-                    {
-                        KnnMap.Add(item, weightsComputer.GetWeights(item));
-                    }
-                    KNN.ColdStart(ref KnnMap, ref ColdStart, int.Parse(kInput.Text), AssignMetric());
-                    KNN.Testing(ref KnnMap, int.Parse(kInput.Text), Metrics.EuclideanMetricDistance);
-
-                    assignedProperly += KnnMap.Count(i => i.Key.AssignedLabel == i.Key.ActualLabel);
-                    assingedNotProperly += KnnMap.Count(i => i.Key.AssignedLabel != i.Key.ActualLabel);
+                    int amountToTake = TrainingSet.Count / labelArticlesMap.Count / 10;
+                    coldStart.AddRange(pair.Value.Take(amountToTake > pair.Value.Count ? pair.Value.Count : amountToTake).ToList());
                 }
 
-                succededDisplay.Text = assignedProperly.ToString();
-                failedDisplay.Text = assingedNotProperly.ToString();
-                accuracityDisplay.Text = (100.0 * assignedProperly / (assignedProperly + assingedNotProperly)).ToString() + "%";
+                //Creating mapping from coldstart Articles to characteristics values, assigning actual labels
+                Dictionary<Article, List<double>> ColdStart = new Dictionary<Article, List<double>>();
+                foreach (var item in coldStart)
+                {
+                    ColdStart.Add(item, characteristicExtractor.GetWeights(item));
+                    item.AssignedLabel = item.ActualLabel;
+                }
+
+                //Computing characteristics for first run of KNN - resolving problem of cold start
+                Dictionary<Article, List<double>> KnnMap = new Dictionary<Article, List<double>>();
+                foreach (var item in TestingSet)
+                {
+                    KnnMap.Add(item, characteristicExtractor.GetWeights(item));
+                }
+                KNN.ColdStart(ref KnnMap, ref ColdStart, int.Parse(kInput.Text), AssignMetric());
+
+                //Actual KNN algorithm
+                KNN.Testing(ref KnnMap, int.Parse(kInput.Text), Metrics.EuclideanMetricDistance);
+
+                assignedProperly += KnnMap.Count(i => i.Key.AssignedLabel == i.Key.ActualLabel);
+                assingedNotProperly += KnnMap.Count(i => i.Key.AssignedLabel != i.Key.ActualLabel);
+            }
+            UpdateStatus("Klasyfikacja zakończona");
+            succededDisplay.Text = assignedProperly.ToString();
+            failedDisplay.Text = assingedNotProperly.ToString();
+            accuracityDisplay.Text = (100.0 * assignedProperly / (assignedProperly + assingedNotProperly)).ToString() + "%";
+
+        }
+
+        private void Button_Click_Load_Sets(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog fd = new OpenFileDialog();
+            var result = fd.ShowDialog();
+            if (result.Value)
+            {
+                DataSets dataSets = Serialization.Deserialize(fd.FileName);
+                ChosenSet = dataSets.articles;
+
+                if (dataSets.category == "Orgs")
+                {
+                    createdDataCheckBox.IsChecked = true;
+                    selectCategoryComboBox.IsEnabled = false;
+                    selectCategoryComboBox.Items.Add("Orgs");
+                    selectCategoryComboBox.Text = "Orgs";
+                }
+                else
+                {
+                    selectCategoryComboBox.Text = dataSets.category;
+                    createdDataCheckBox.IsChecked = false;
+                    selectCategoryComboBox.IsEnabled = true;
+                }
+                beginClasificationButton.IsEnabled = true;
+                saveSets.IsEnabled = true;
             }
         }
 
-        private void RadioButton_Checked(object sender, RoutedEventArgs e)
-        {
 
+        private void Button_Click_Randomize_Sets(object sender, RoutedEventArgs e)
+        {
+            PrepareRandomizedDataCollections(ref TrainingSet, ref TestingSet);
+            beginClasificationButton.IsEnabled = true;
+            saveSets.IsEnabled = true;
+        }
+
+        private void Button_Click_Save_Sets(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog fd = new SaveFileDialog();
+            fd.AddExtension = true;
+            fd.DefaultExt = "xml";
+
+            var result = fd.ShowDialog();
+            if (result.Value)
+            {
+                DataSets dataSets = new DataSets
+                {
+                    articles = ChosenSet,
+                    category = selectCategoryComboBox.Text
+                };
+                Serialization.Serialize(fd.FileName, dataSets);
+            }
         }
 
         private void DictionaryMatchingRadioButton_Checked(object sender, RoutedEventArgs e)
@@ -149,28 +148,29 @@ namespace KSR_GUI
             }
         }
 
-        private void PrepareDataCollections(ref List<Article> FilteredArticles, ref List<Article> TrainingSet, ref List<Article> TestingSet)
+        private void PrepareRandomizedDataCollections(ref List<Article> TrainingSet, ref List<Article> TestingSet)
         {
-            if((bool)createdDataCheckBox.IsChecked)
+            List<Article> FilteredArticles = new List<Article>();
+            if ((bool)createdDataCheckBox.IsChecked)
             {
                 CurrentArticles = CustomArticles;
             }
             else
             {
-                CurrentArticles = AllReutersArticles;
+                CurrentArticles = DefaultArticles;
             }
 
-            if(selectCategoryComboBox.Text == "Places")
+            if (selectCategoryComboBox.Text == "Places")
             {
                 FilteredArticles = Utils.RemoveArticleWithMultipleLabelsInCategory(CurrentArticles, Category.EPlaces);
                 FilteredArticles = FilteredArticles.Where(p => Utils.Places.Contains(p.ActualLabel)).ToList();
             }
-            else if(selectCategoryComboBox.Text == "People")
+            else if (selectCategoryComboBox.Text == "People")
             {
                 FilteredArticles = Utils.RemoveArticleWithMultipleLabelsInCategory(CurrentArticles, Category.EPeople);
                 FilteredArticles = FilteredArticles.Where(p => Utils.People.Contains(p.ActualLabel)).ToList();
             }
-            else if(selectCategoryComboBox.Text == "Orgs")
+            else if (selectCategoryComboBox.Text == "Orgs")
             {
                 FilteredArticles = Utils.RemoveArticleWithMultipleLabelsInCategory(CurrentArticles, Category.EOrgs);
                 FilteredArticles = FilteredArticles.Where(p => Utils.Orgs.Contains(p.ActualLabel)).ToList();
@@ -179,10 +179,18 @@ namespace KSR_GUI
             FilteredArticles.Shuffle();
             int countOfArticles = int.Parse(countOfArticlesInput.Text);
             FilteredArticles = FilteredArticles.Take(countOfArticles > FilteredArticles.Count ? FilteredArticles.Count : countOfArticles).ToList();
-            TestingSet = Utils.ExtractPartOfCollection(ref FilteredArticles, int.Parse(trainingDataPercentageInput.Text));
-            TrainingSet = FilteredArticles;
+            ChosenSet = FilteredArticles;
+             Utils.DistributeArticles(ChosenSet, ref TrainingSet, ref TestingSet, int.Parse(trainingDataPercentageInput.Text));
         }
 
+        private void Selection_Changed(object sender, RoutedEventArgs e)
+        {
+            if (beginClasificationButton != null && saveSets != null)
+            {
+                beginClasificationButton.IsEnabled = false;
+                saveSets.IsEnabled = false;
+            }
+        }
         private Func<List<double>, List<double>, double> AssignMetric()
         {
             switch (selectMetricCombobox.Text)
@@ -207,11 +215,11 @@ namespace KSR_GUI
             }
         }
 
-        private void CheckBox_Checked_1(object sender, RoutedEventArgs e)
+        private void CheckBox_Custom_Data(object sender, RoutedEventArgs e)
         {
-            if(sender == createdDataCheckBox)
+            if (sender == createdDataCheckBox)
             {
-                if((bool)createdDataCheckBox.IsChecked)
+                if ((bool)createdDataCheckBox.IsChecked)
                 {
                     selectCategoryComboBox.IsEnabled = false;
                     selectCategoryComboBox.Items.Add("Orgs");
@@ -224,6 +232,56 @@ namespace KSR_GUI
                     selectCategoryComboBox.Text = "Places";
                 }
             }
+        }
+
+        private void SetExtractor()
+        {
+            if ((bool)customCharacteristicsRadioButton.IsChecked)
+            {
+                List<bool> availability = new List<bool>();
+                foreach (var child in extractorsChoiceStackPanel.Children)
+                {
+                    CheckBox checkBox = (CheckBox)child;
+                    availability.Add(checkBox.IsChecked.Value);
+                }
+                characteristicExtractor = new CustomCharacteristicsExtractor(availability);
+            }
+            else
+            {
+                List<string> rankingsOfOccurences = new List<string>();
+                rankingsOfOccurences = Utils.CreateWordsOccurenceFrequencyRanking(TrainingSet, StopList);
+                characteristicExtractor = new DictionaryMatcher(rankingsOfOccurences.Take(100).ToList());
+            }
+        }
+
+        private void PrepareLabelArticleMap(ref Dictionary<string, List<Article>> labelArticlesMap)
+        {
+            if (selectCategoryComboBox.Text == "Places")
+            {
+                foreach (string place in Utils.Places)
+                {
+                    labelArticlesMap.Add(place, TrainingSet.Where(p => p.Places.Contains(place)).ToList());
+                }
+            }
+            else if (selectCategoryComboBox.Text == "People")
+            {
+                foreach (string people in Utils.People)
+                {
+                    labelArticlesMap.Add(people, TrainingSet.Where(p => p.People.Contains(people)).ToList());
+                }
+            }
+            else if (selectCategoryComboBox.Text == "Orgs")
+            {
+                foreach (string org in Utils.Orgs)
+                {
+                    labelArticlesMap.Add(org, TrainingSet.Where(p => p.Orgs.Contains(org)).ToList());
+                }
+            }
+        }
+
+        private void UpdateStatus(string newStatus)
+        {
+            statusTextBlock.Dispatcher.BeginInvoke((Action)(() => { statusTextBlock.Text = newStatus; }));
         }
     }
 }

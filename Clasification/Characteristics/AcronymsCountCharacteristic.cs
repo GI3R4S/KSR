@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Classification
 {
-    class AcronymsCountExtractor : Extractor
+    class AcronymsCountCharacteristic : Characteristic
     {
         public override double ComputeFactor(Article article)
         {

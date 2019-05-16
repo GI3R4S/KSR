@@ -13,27 +13,24 @@ namespace Data_Parser
         }
         public static List<Article> ParseHtmlDocuments(string directoryPath)
         {
-            List<string> resourceFiles = new List<string>(Directory.GetFiles(directoryPath).Where(p => p.EndsWith(".sgm")));
+            List<string> allResourceFiles = new List<string>(Directory.GetFiles(directoryPath).Where(p => p.EndsWith(".sgm")));
             List<Article> allArticles = new List<Article>();
-            foreach (var fName in resourceFiles)
+            foreach (string fileName in allResourceFiles)
             {
-                allArticles.InsertRange(allArticles.Count != 0 ? allArticles.Count - 1 : 0, ParseHtmlDocument(fName));
+                allArticles.InsertRange(allArticles.Count != 0 ? allArticles.Count - 1 : 0, ParseHtmlDocument(fileName));
             }
-
             return allArticles;
         }
 
         public static List<Article> ParseHtmlDocument(string filePath)
         {
-            int i = 0;
-            List<Article> toReturn = new List<Article>();
-            HtmlDocument sgml = new HtmlDocument();
-            sgml.Load(filePath);
+            List<Article> parsedArticles = new List<Article>();
+            HtmlDocument sgmlDocument = new HtmlDocument();
+            sgmlDocument.Load(filePath);
             
-            List<HtmlNode> articlesNodes = sgml.DocumentNode.Descendants("REUTERS").ToList();
+            List<HtmlNode> articlesNodes = sgmlDocument.DocumentNode.Descendants("REUTERS").ToList();
             foreach (HtmlNode articleNode in articlesNodes)
             {
-                i++;
                 List<HtmlNode> articleNodeChildren = articleNode.ChildNodes.ToList();
                 string date = articleNodeChildren.First(p => p.OriginalName == "DATE").InnerText.ToLower();
 
@@ -139,10 +136,10 @@ namespace Data_Parser
                 article.Text.Title = title;
                 article.Text.Author = author;
 
-                toReturn.Add(article);
+                parsedArticles.Add(article);
             }
 
-            return toReturn;
+            return parsedArticles;
         }
     }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Classification
 {
-    public interface WeightsComputer
+    public interface CharacteristicsExtractor
     {
         List<double> GetWeights(Article article);
     }

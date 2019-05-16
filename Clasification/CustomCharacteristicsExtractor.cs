@@ -5,7 +5,7 @@ using System.Diagnostics;
 
 namespace Classification
 {
-    public class CustomCharacteristicsExtractor : WeightsComputer
+    public class CustomCharacteristicsExtractor : CharacteristicsExtractor
     {
         private List<bool> ExtractorsAvailability = new List<bool>
         {
@@ -18,19 +18,19 @@ namespace Classification
             false
         };
 
-        private List<Extractor> Extractors = new List<Extractor>(7);
+        private List<Characteristic> Extractors = new List<Characteristic>(7);
 
         public CustomCharacteristicsExtractor(List <bool> aExtractorsAvailability)
         {
             Debug.Assert(aExtractorsAvailability.Count == ExtractorsAvailability.Count);
             ExtractorsAvailability = aExtractorsAvailability;
-            Extractors.Add(new AcronymsCountExtractor());
-            Extractors.Add(new ArticleWordsCountExtractor());
-            Extractors.Add(new LongWordsCountExtractor());
-            Extractors.Add(new MediumWordsCountExtractor());
-            Extractors.Add(new ShortWordsCountExtractor());
-            Extractors.Add(new UpperCaseWorldsExtractor());
-            Extractors.Add(new VowelCountExtractor());
+            Extractors.Add(new AcronymsCountCharacteristic());
+            Extractors.Add(new ArticleWordsCountCharacteristic());
+            Extractors.Add(new LongWordsCountCharacteristic());
+            Extractors.Add(new MediumWordsCountCharacteristic());
+            Extractors.Add(new ShortWordsCountCharacteristic());
+            Extractors.Add(new UpperCaseWorldsCharacteristic());
+            Extractors.Add(new VowelCountCharacteristic());
         }
 
         public List<double> GetWeights(Article article)

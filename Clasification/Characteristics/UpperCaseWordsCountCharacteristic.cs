@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Data_Parser;
 
 namespace Classification
 {
-    class UpperCaseWorldsExtractor : Extractor
+    class UpperCaseWorldsCharacteristic : Characteristic
     {
         public override double ComputeFactor(Article article)
         {

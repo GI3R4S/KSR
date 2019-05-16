@@ -3,7 +3,7 @@ using Data_Parser;
 
 namespace Classification
 {
-    class VowelCountExtractor : Extractor
+    class VowelCountCharacteristic : Characteristic
     {
         public override double ComputeFactor(Article article)
         {

@@ -119,23 +119,17 @@ namespace Classification
             return toFilter;
         }
 
-        public static List<Article> ExtractPartOfCollection(ref List<Article> trainingData, float percentage)
+        public static void DistributeArticles(List<Article> aChosenSet, ref List<Article> aTrainingSet, ref List<Article> aTestingSet, float percentage)
         {
-            List<Article> testData = new List<Article>();
+            List<Article> trainingData = new List<Article>();
+            List<Article> testingData = new List<Article>();
+
             Debug.Assert(percentage >= 0 && percentage <= 100);
 
-            int numberOfRequestedItems = (int)(trainingData.Count * percentage / 100);
-            Random random = new Random();
+            int numberOfRequestedItems = (int)(aChosenSet.Count * percentage / 100);
 
-            while (numberOfRequestedItems-- != 0)
-            {
-                int randomIndex = random.Next(trainingData.Count);
-                Article randomItem = trainingData[randomIndex];
-                trainingData.RemoveAt(randomIndex);
-                testData.Add(randomItem);
-            };
-
-            return testData;
+            aTrainingSet = aChosenSet.Skip(numberOfRequestedItems).ToList();
+            aTestingSet = aChosenSet.Take(numberOfRequestedItems).ToList();
         }
 
         public static List<string> CreateWordsOccurenceFrequencyRanking(List<Article> articles, SortedSet<string> aStopList)

@@ -5,13 +5,13 @@ using System.Linq;
 
 namespace Classification
 {
-    class ShortWordsCountExtractor : Extractor
+    class MediumWordsCountCharacteristic : Characteristic
     {
         public override double ComputeFactor(Article article)
         {
             List<string> articleWords = Utils.ExtractMeaningfulWords(article);
 
-            return articleWords.Count(p => p.Length <= 4);
+            return articleWords.Count(p => p.Length >= 4 && p.Length <=7) ;
         }
     }
 }

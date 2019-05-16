@@ -11,11 +11,11 @@
             <RowDefinition Height="25*"/>
             <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
-        <TextBox Text="10" TextAlignment="Center" Name="kInput" HorizontalAlignment="Left" Height="23" Margin="10,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="135" TextChanged="TextBox_TextChanged"/>
+        <TextBox Text="10" TextAlignment="Center" Name="kInput" HorizontalAlignment="Left" Height="23" Margin="10,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="135" />
         <TextBlock FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="135" Background="#FF89AA87"><Run Text="Współczynnik "/><Run Text="k"/><Run Text=" algorytmu KNN"/></TextBlock>
-        <TextBox Name="countOfArticlesInput" HorizontalAlignment="Left" Height="23" Margin="165,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="TextBox_TextChanged" Text="1000" TextAlignment="Center"/>
-        <TextBlock FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="165,3,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Background="#FF89AA87" Height="37" Text="Ilość artyułów do wczytania"/>
-        <TextBox Text="40" TextAlignment="Center"  Name="trainingDataPercentageInput" HorizontalAlignment="Left" Height="23" Margin="320,47,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="145" TextChanged="TextBox_TextChanged"/>
+        <TextBox Name="countOfArticlesInput" HorizontalAlignment="Left" Height="23" Margin="165,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"  Text="1000" TextAlignment="Center"/>
+        <TextBlock FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="165,3,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Background="#FF89AA87" Height="37"><Run Text="Liczba artykułów "/><Run Text="do wczytania"/></TextBlock>
+        <TextBox Text="40" TextAlignment="Center"  Name="trainingDataPercentageInput" HorizontalAlignment="Left" Height="23" Margin="320,47,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="145" />
         <TextBlock FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="320,4,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="145" Background="#FF89AA87"><Run Text="Udział danych "/><Run Text="testowych"/><Run Text="(%)"/></TextBlock>
         <TextBlock  Text="Ekstraktory" FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="601,4,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="181" Background="#FF89AA87" Height="37" RenderTransformOrigin="0.379,0.405"/>
         <TextBlock FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="480,5,0,0" TextWrapping="Wrap" Text="Wybór metryki" VerticalAlignment="Top" Width="116" Background="#FF89AA87" Height="37"/>
@@ -46,7 +46,6 @@
             <CheckBox Content="Liczba słów z wielkiej litery" HorizontalAlignment="Left" VerticalAlignment="Top" IsChecked="True"/>
             <CheckBox Content="Liczba samogłosek" HorizontalAlignment="Left" VerticalAlignment="Top" IsChecked="True"/>
         </StackPanel>
-        <Button Name="beginClasificationButton" IsEnabled="True" Content="Rozpocznij klasyfikację" HorizontalAlignment="Left" Margin="395,277,0,0" VerticalAlignment="Top" Width="343" Height="48" Click="Button_Click"/>
         <TextBlock IsEnabled="False" FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="10,153,0,0" TextWrapping="Wrap" Text="Statystyki" VerticalAlignment="Top" Width="305" Background="#FF89AA87" Height="29"/>
         <TextBlock IsEnabled="False" FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="10,187,0,0" TextWrapping="Wrap" Text="Sklasyfikowane poprawnie" VerticalAlignment="Top" Width="165" Background="#FF89AA87" Height="44"/>
         <TextBlock IsEnabled="False" FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="10,238,0,0" TextWrapping="Wrap" Text="Sklasyfikowane niepoprawnie" VerticalAlignment="Top" Width="165" Background="#FF89AA87" Height="42"/>
@@ -55,15 +54,19 @@
         <TextBox  Name="failedDisplay" TextAlignment="Center" IsReadOnly="True" HorizontalAlignment="Left" Height="42" Margin="189,238,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="126"/>
         <TextBox  Name="accuracityDisplay" TextAlignment="Center" IsReadOnly="True" HorizontalAlignment="Left" Height="40" Margin="189,285,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="126"/>
         <TextBlock Name="statusTextBlock"  FontSize="18px" FontWeight="Bold" TextAlignment="Center"  HorizontalAlignment="Left" Margin="10,85,0,0" TextWrapping="Wrap" Text="Trwa ładowanie zasobów..." VerticalAlignment="Top" Height="63" Width="275"/>
-        <RadioButton Name="customCharacteristicsRadioButton" IsChecked="True" Content="Custom characteristics" HorizontalAlignment="Left" Margin="601,53,0,0" VerticalAlignment="Top" Checked="RadioButton_Checked"/>
+        <RadioButton Name="customCharacteristicsRadioButton" IsChecked="True" Content="Custom characteristics" HorizontalAlignment="Left" Margin="601,53,0,0" VerticalAlignment="Top"/>
         <RadioButton Name="dictionaryMatchingRadioButton" IsChecked="False" Content="Dictionary matching" HorizontalAlignment="Left" Margin="601,190,0,0" VerticalAlignment="Top" Checked="DictionaryMatchingRadioButton_Checked"/>
         <TextBlock FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="480,75,0,0" TextWrapping="Wrap" Text="Kategoria klasyfikacji" VerticalAlignment="Top" Width="116" Background="#FF89AA87" Height="37"/>
-        <ComboBox SelectedIndex="0" Name="selectCategoryComboBox" HorizontalAlignment="Left" Margin="480,117,0,0" VerticalAlignment="Top" Width="116">
+        <ComboBox SelectedIndex="0" Name="selectCategoryComboBox" HorizontalAlignment="Left" Margin="480,117,0,0" VerticalAlignment="Top" Width="116" SelectionChanged="Selection_Changed">
             <ComboBoxItem Content="Places"/>
             <ComboBoxItem Content="People"/>
         </ComboBox>
         <TextBlock FontSize="14px"  FontWeight="ExtraBold" TextAlignment="Center" HorizontalAlignment="Left" Margin="320,75,0,0" TextWrapping="Wrap" Text="Ilość przebiegów klasfikacji" VerticalAlignment="Top" Width="145" Background="#FF89AA87" Height="37"/>
-        <TextBox Name="countOfLoopsInput" Text="10" TextAlignment="Center" HorizontalAlignment="Left" Height="23" Margin="320,117,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="145" TextChanged="TextBox_TextChanged"/>
-        <CheckBox Name="createdDataCheckBox" Content="Własne pliki danych" HorizontalAlignment="Left" Margin="320,153,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked_1" Unchecked="CheckBox_Checked_1"/>
+        <TextBox Name="countOfLoopsInput" Text="10" TextAlignment="Center" HorizontalAlignment="Left" Height="23" Margin="320,117,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="145" />
+        <CheckBox Name="createdDataCheckBox" Content="Własne pliki danych" HorizontalAlignment="Left" Margin="320,153,0,0" VerticalAlignment="Top" Checked="CheckBox_Custom_Data" Unchecked="CheckBox_Custom_Data" />
+        <Button x:Name="beginClasificationButton" IsEnabled="True" Content="Rozpocznij klasyfikację" HorizontalAlignment="Left" Margin="340,329,0,0" VerticalAlignment="Top" Width="343" Height="48" Click="Button_Click_Start_Clasification" Grid.RowSpan="2"/>
+        <Button x:Name="loadSets" IsEnabled="True" Content="Wczytaj zestaw" HorizontalAlignment="Left" Margin="340,190,0,0" VerticalAlignment="Top" Width="115" Height="48" Click="Button_Click_Load_Sets"/>
+        <Button x:Name="randomizeSets" IsEnabled="True" Content="Wylosuj zestaw" HorizontalAlignment="Left" Margin="340,256,0,0" VerticalAlignment="Top" Width="115" Height="48" Click="Button_Click_Randomize_Sets"/>
+        <Button x:Name="saveSets" IsEnabled="True" Content="Zapisz zestaw" HorizontalAlignment="Left" Margin="568,256,0,0" VerticalAlignment="Top" Width="115" Height="48" Click="Button_Click_Save_Sets"/>
     </Grid>
 </Window>

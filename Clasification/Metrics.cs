@@ -38,17 +38,18 @@ namespace Classification
         public static double ChebyshevMetricDistance(List<double> first, List<double> second)
         {
             Debug.Assert(first.Count == second.Count);
-            double distance = 0;
+            double maxDistance = 0;
 
             for (int i = 0; i < first.Count; i++)
             {
-                if(Math.Abs(first[i] - second[i]) > distance)
+                double currentDistance = Math.Abs(first[i] - second[i]);
+                if (currentDistance > maxDistance)
                 {
-                    distance = Math.Abs(first[i] - second[i]);
+                    maxDistance = currentDistance;
                 }
             }
 
-            return Math.Sqrt(distance);
+            return maxDistance;
         }
     }
 }

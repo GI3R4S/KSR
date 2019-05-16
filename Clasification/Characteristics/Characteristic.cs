@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Classification
 {
-    public abstract class Extractor
+    public abstract class Characteristic
     {
         protected static HashSet<char> Vowels = new HashSet<char>()
         {
